@@ -1,12 +1,14 @@
+const DRAW_RATIO = 0.01;
+
 const todo = () => console.error("TODO");
 
 const canvas = document.getElementsByTagName("canvas")[0];
-canvas.addEventListener("mousemove", function (event) {
-    const rect = canvas.getBoundingClientRect();
+// canvas.addEventListener("mousemove", function (event) {
+//     const rect = canvas.getBoundingClientRect();
 
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-});
+//     const x = event.clientX - rect.left;
+//     const y = event.clientY - rect.top;
+// });
 
 const context = canvas.getContext("2d");
 
@@ -16,10 +18,10 @@ const flock = new Flock();
 {
 
 
-    for (let i = 0; i < 200; i++) {
-        const pos = Vector.randomRect().mul(canvas.width);
+    for (let i = 0; i < 100; i++) {
+        const pos = Vector.randomRect();
         const color = randomColor();
-        const boid = new Boid(pos, 0.33, 0.003, 50, Math.PI * 2, 0.75, 2, 1, 1.5, color);
+        const boid = new Boid(pos, 1, 0.75, 0.1, Math.PI * 2, 0.75, 1, 1, 1, color);
         flock.addBoid(boid);
     }
 }
@@ -90,7 +92,7 @@ function render() {
     // }
 
     t1 = performance.now();
-    delta = t1 - t0;
+    delta = (t1 - t0) / 1000;
     t0 = performance.now();
 
 

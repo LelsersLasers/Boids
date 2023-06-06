@@ -37,7 +37,7 @@ class Boid {
 		
 		this.acc = this.acc.mul(0);
 
-		this.pos.wrap(new Vector(canvas.width, canvas.height));
+		this.pos.wrap(Vector.one());
 	}
 
 	calculateBehavior(flock) {
@@ -147,30 +147,32 @@ class Boid {
 		this.acc = this.acc.add(force);
 	}
 
-	render(context) {
-		context.strokeStyle = this.color;
-		context.beginPath();
-		context.arc(
-			this.pos.x,
-			this.pos.y,
-			this.perceptionRadius,
-			this.vel.angle() - this.perceptionAngle / 2,
-			this.vel.angle() + this.perceptionAngle / 2
-		);
-		context.stroke();
+	render(context, drawDebug = false) {
+		const drawPos = this.pos.mul(context.canvas.width);
+		const drawRadius = this.perceptionRadius * context.canvas.width;
 
-		context.strokeStyle = this.color;
-		context.beginPath();
-		context.moveTo(this.pos.x, this.pos.y);
-		const target = this.pos.add(this.vel.normalize().mul(this.perceptionRadius));
-		context.lineTo(target.x, target.y);
-		context.stroke();
+		if (drawDebug) {
+			context.strokeStyle = this.color;
+			context.beginPath();
+			context.arc(
+				drawPos.x, drawPos.y,
+				drawRadius,
+				this.vel.angle() - this.perceptionAngle / 2,
+				this.vel.angle() + this.perceptionAngle / 2
+			);
+			context.stroke();
+
+			context.strokeStyle = this.color;
+			context.beginPath();
+			context.moveTo(drawPos.x, drawPos.y);
+			const target = drawPos.add(this.vel.normalize().mul(drawRadius));
+			context.lineTo(target.x, target.y);
+			context.stroke();
+		}
 
 		context.fillStyle = this.color;
 		context.beginPath();
-		context.arc(this.pos.x, this.pos.y, 5, 0, 2 * Math.PI);
+		context.arc(drawPos.x, drawPos.y, DRAW_RATIO * context.canvas.width, 0, 2 * Math.PI);
 		context.fill();
-
-		// perception radius + angle
 	}
 }

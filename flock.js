@@ -14,7 +14,7 @@ class Flock {
 	render(context) {
 		for (let i = 0; i < this.boids.length; i++) {
 			const boid = this.boids[i];
-			boid.render(context);
+			boid.render(context, i == 0);
 		}
 	}
 
