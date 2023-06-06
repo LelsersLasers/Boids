@@ -6,16 +6,24 @@ canvas.addEventListener("mousemove", function (event) {
 
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-
-    boid2.pos = new Vector(x, y);
-
 });
 
 const context = canvas.getContext("2d");
 
 
-const boid1 = new Boid(new Vector(50, 500), 0.75, 0.005, 100, Math.PI * 2, "red");
-const boid2 = new Boid(new Vector(200, 200), 0.75, 0.005, 100, Math.PI * 2, "blue");
+
+const flock = new Flock();
+{
+
+
+    for (let i = 0; i < 200; i++) {
+        const pos = Vector.randomRect().mul(canvas.width);
+        const color = randomColor();
+        const boid = new Boid(pos, 0.33, 0.003, 50, Math.PI * 2, 0.75, 2, 1, 1.5, color);
+        flock.addBoid(boid);
+    }
+}
+
 
 let paused = false;
 
@@ -52,19 +60,30 @@ function rgbToFillStyle(r, g, b) {
 
     return "rgb(" + scaledR + "," + scaledG + "," + scaledB + ")";
 }
+function randomColor() {
+    let r = Math.random();
+    let g = Math.random();
+    let b = Math.random();
+
+    return rgbToFillStyle(r, g, b);
+}
+  
 
 function render() {
     context.fillStyle = "#3B4252";
     context.fillRect(0, 0, canvas.width, canvas.height);
 
 
-    boid1.seek(boid2.pos);
+    flock.update(delta);
+    flock.render(context);
 
-    boid1.update(delta);
-    boid2.update(delta);
+    // boid1.seek(boid2.pos);
 
-    boid1.render(context);
-    boid2.render(context);
+    // boid1.update(delta);
+    // boid2.update(delta);
+
+    // boid1.render(context);
+    // boid2.render(context);
 
 
     // if (!paused) {

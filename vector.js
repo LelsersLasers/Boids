@@ -37,6 +37,14 @@ class Vector {
 		}
 		return this.clone();
 	}
+	wrap(other) {
+		// MODIFIES THIS!!!
+		if (this.x > other.x)	this.x -= other.x;
+		if (this.x < 0)			this.x += other.x;
+
+		if (this.y > other.y)	this.y -= other.y;
+		if (this.y < 0)	this.y += other.y;
+	}
 
 	rotate(angle) {
 		// Angle in radians
@@ -66,6 +74,14 @@ class Vector {
 
 	static fromArray(array) {
 		return new Vector(array[0], array[1]);
+	}
+
+	static randomUnit() {
+		const angle = Math.random() * Math.PI * 2;
+		return new Vector(Math.cos(angle), Math.sin(angle));
+	}
+	static randomRect() {
+		return new Vector(Math.random(), Math.random());
 	}
 
 	static zero() {

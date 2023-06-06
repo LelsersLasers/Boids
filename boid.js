@@ -1,14 +1,28 @@
 class Boid {
-	constructor(pos, maxSpeed, maxForce, perceptionRadius, perceptionAngle, color) {
+	constructor(
+		pos,
+		maxSpeed, maxForce,
+		perceptionRadius, perceptionAngle,
+		seperationMultiplier,
+		separationWeight, alignmentWeight, cohesionWeight,
+		color
+	) {
 		this.pos = pos;
-		this.vel = new Vector(0, 0);
-		this.acc = new Vector(0, 0);
+		// this.vel = new Vector(0, 0);
+		this.vel = Vector.randomUnit();
+		this.acc = Vector.zero();
 
 		this.maxSpeed = maxSpeed;
 		this.maxForce = maxForce;
 
 		this.perceptionRadius = perceptionRadius;
 		this.perceptionAngle = perceptionAngle;
+
+		this.seperationMultiplier = seperationMultiplier;
+
+		this.separationWeight = separationWeight;
+		this.alignmentWeight = alignmentWeight;
+		this.cohesionWeight = cohesionWeight;
 
 		this.color = color;
 	}
@@ -21,14 +35,112 @@ class Boid {
 		
 		this.pos = this.pos.add(this.vel.mul(delta));
 		
-		// this.acc = this.acc.mul(0);
+		this.acc = this.acc.mul(0);
+
+		this.pos.wrap(new Vector(canvas.width, canvas.height));
+	}
+
+	calculateBehavior(flock) {
+		this.seperation(flock);
+		this.alignment(flock);
+		this.cohesion(flock);
+	}
+
+	seperation(flock) {
+		let sum = Vector.zero();
+		let count = 0;
+
+		for (let i = 0; i < flock.boids.length; i++) {
+			const boid = flock.boids[i];
+			if (boid == this) {
+				continue;
+			}
+
+			const dif = this.pos.sub(boid.pos);
+			const dist = dif.mag();
+
+			if (dist < this.perceptionRadius * this.seperationMultiplier) {
+				// inversely proportional to distance
+				sum = sum.add(dif.normalize().div(dist));
+				count++;
+			}
+		}
+
+		if (count > 0) {
+			sum = sum.div(count);
+			sum = sum.normalize().mul(this.maxSpeed);
+			let steer = sum.sub(this.vel);
+			steer = steer.limit(this.maxForce);
+			this.applyForce(steer.mul(this.separationWeight));
+		}
+
+	}
+	alignment(flock) {
+		let sum = Vector.zero();
+		let count = 0;
+
+		for (let i = 0; i < flock.boids.length; i++) {
+			const boid = flock.boids[i];
+			if (boid == this) {
+				continue;
+			}
+
+			const dif = boid.pos.sub(this.pos);
+			const dist = dif.mag();
+
+			if (dist < this.perceptionRadius) {
+				// const angle = this.vel.angleBetween(dif);
+
+				// if (angle < this.perceptionAngle) {
+					sum = sum.add(boid.vel);
+					count++;
+				// }
+			}
+		}
+		if (count > 0) {
+			sum = sum.div(count);
+			sum = sum.normalize().mul(this.maxSpeed);
+			let steer = sum.sub(this.vel);
+			steer = steer.limit(this.maxForce);
+			this.applyForce(steer.mul(this.alignmentWeight));
+		}
+	}
+	cohesion(flock) {
+		let sum = new Vector(0, 0);
+		let count = 0;
+
+		for (let i = 0; i < flock.boids.length; i++) {
+			const boid = flock.boids[i];
+			if (boid == this) {
+				continue;
+			}
+
+			const dif = boid.pos.sub(this.pos);
+			const dist = dif.mag();
+
+			if (dist < this.perceptionRadius) {
+				// const angle = this.vel.angleBetween(dif);
+
+				// if (angle < this.perceptionAngle) {
+					sum = sum.add(boid.pos);
+					count++;
+				// }
+			}
+		}
+
+		if (count > 0) {
+			sum = sum.div(count);
+			let steer = this.seek(sum);
+			steer = steer.limit(this.maxForce);
+			this.applyForce(steer.mul(this.cohesionWeight));
+		}
 	}
 
 	seek(target) {
 		const desiredDif = target.sub(this.pos);
 		const desiredVel = desiredDif.normalize().mul(this.maxSpeed);
 		const steer = desiredVel.sub(this.vel);
-		this.applyForce(steer);
+		return steer;
 	}
 
 	applyForce(force) {
@@ -36,9 +148,29 @@ class Boid {
 	}
 
 	render(context) {
+		context.strokeStyle = this.color;
+		context.beginPath();
+		context.arc(
+			this.pos.x,
+			this.pos.y,
+			this.perceptionRadius,
+			this.vel.angle() - this.perceptionAngle / 2,
+			this.vel.angle() + this.perceptionAngle / 2
+		);
+		context.stroke();
+
+		context.strokeStyle = this.color;
+		context.beginPath();
+		context.moveTo(this.pos.x, this.pos.y);
+		const target = this.pos.add(this.vel.normalize().mul(this.perceptionRadius));
+		context.lineTo(target.x, target.y);
+		context.stroke();
+
 		context.fillStyle = this.color;
 		context.beginPath();
 		context.arc(this.pos.x, this.pos.y, 5, 0, 2 * Math.PI);
 		context.fill();
+
+		// perception radius + angle
 	}
 }
