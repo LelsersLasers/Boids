@@ -22,4 +22,6 @@ class BoidSettings {
     static avoidWalls; // false: wrap
     static wallMargin;
     static wallTurnStrength;
+
+    static numBoids;
 }

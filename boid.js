@@ -39,9 +39,49 @@ class Boid {
 	}
 
 	calculateBehavior(flock, obstacles) {
-		this.seperation(flock);
-		this.alignment(flock);
-		this.cohesion(flock);
+        const screenPos = this.pos.mod(Vector.one());
+
+        let seperationSum = Vector.zero();
+        let alignmentSum = Vector.zero();
+        let cohesionSum = Vector.zero();
+        let count = 0;
+
+        for (let i = 0; i < flock.boids.length; i++) {
+            const boid = flock.boids[i];
+            if (boid == this) continue;
+
+            const boidScreenPos = this.closestBoidScreenPos(boid);
+
+            const dif = boidScreenPos.sub(screenPos);
+            const dist = dif.mag();
+
+            // seperation
+            if (dist < BoidSettings.perceptionRadius * BoidSettings.seperationMultiplier) {
+                const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
+                if (angle < BoidSettings.perceptionAngle) {
+                    seperationSum = seperationSum.add(screenPos.sub(boidScreenPos));
+                }
+            }
+            // alignment and cohesion
+            if (dist < BoidSettings.perceptionRadius) {
+                const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
+                if (angle < BoidSettings.perceptionAngle) {
+                    alignmentSum = alignmentSum.add(boid.vel);
+                    cohesionSum = cohesionSum.add(boidScreenPos);
+
+                    count++;
+                }
+            }
+        }
+
+        this.acc = this.acc.add(seperationSum.mul(BoidSettings.separationWeight));
+        if (count > 0) {
+            alignmentSum = alignmentSum.div(count);
+            this.acc = this.acc.add(alignmentSum.mul(BoidSettings.alignmentWeight));
+
+            cohesionSum = cohesionSum.div(count);
+            this.acc = this.acc.add(cohesionSum.sub(screenPos).mul(BoidSettings.cohesionWeight));
+        }
 
         this.avoidObstacles(obstacles);
 
@@ -135,85 +175,6 @@ class Boid {
 
         return closest;
     }
-
-	seperation(flock) {
-        const screenPos = this.pos.mod(Vector.one());
-        let sum = Vector.zero();
-
-        for (let i = 0; i < flock.boids.length; i++) {
-            const boid = flock.boids[i];
-            if (boid == this) continue;
-
-            const boidScreenPos = this.closestBoidScreenPos(boid);
-
-
-            const dif = boidScreenPos.sub(screenPos);
-            const dist = dif.mag();
-            if (dist < BoidSettings.perceptionRadius * BoidSettings.seperationMultiplier) {
-                const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
-                if (angle < BoidSettings.perceptionAngle) {
-                    sum = sum.add(screenPos.sub(boidScreenPos));
-                }
-            }
-        }
-
-        this.acc = this.acc.add(sum.mul(BoidSettings.separationWeight));
-	}
-	alignment(flock) {
-        const screenPos = this.pos.mod(Vector.one());
-        let sum = Vector.zero();
-        let count = 0;
-
-        for (let i = 0; i < flock.boids.length; i++) {
-            const boid = flock.boids[i];
-            if (boid == this) continue;
-
-            const boidScreenPos = this.closestBoidScreenPos(boid);
-
-            const dif = boidScreenPos.sub(screenPos);
-            const dist = dif.mag();
-            if (dist < BoidSettings.perceptionRadius) {
-                const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
-                if (angle < BoidSettings.perceptionAngle) {
-                    sum = sum.add(boid.vel);
-                    count++;
-                }
-            }
-        }
-
-        if (count > 0) {
-            sum = sum.div(count);
-            this.acc = this.acc.add(sum.mul(BoidSettings.alignmentWeight));
-        }
-	}
-	
-	cohesion(flock) {
-        const screenPos = this.pos.mod(Vector.one());
-        let sum = Vector.zero();
-        let count = 0;
-
-        for (let i = 0; i < flock.boids.length; i++) {
-            const boid = flock.boids[i];
-            if (boid == this) continue;
-
-            const boidScreenPos = this.closestBoidScreenPos(boid);
-
-            const dif = boidScreenPos.sub(screenPos);
-            const dist = dif.mag();
-            if (dist < BoidSettings.perceptionRadius) {
-                const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
-                if (angle < BoidSettings.perceptionAngle) {
-                    sum = sum.add(boidScreenPos);
-                    count++;
-                }
-            }
-        }
-
-        if (count > 0) {
-            sum = sum.div(count);
-            this.acc = this.acc.add(sum.sub(screenPos).mul(BoidSettings.cohesionWeight));
-        }
-	}
 
 	render(context, drawDebug = false) {
 		const drawPos = this.pos.mod(Vector.one()).mul(context.canvas.width);

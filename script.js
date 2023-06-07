@@ -34,7 +34,7 @@ const context = canvas.getContext("2d");
 
     BoidSettings.drawMode = true;
 
-    BoidSettings.historyLength = 100; // not related to delta!!
+    BoidSettings.historyLength = 50; // not related to delta!! (related to framerate)
     BoidSettings.drawHistory = true;
 
     BoidSettings.obstacleStrength = 0;
