@@ -9,7 +9,7 @@ class Boid {
 	) {
 		this.pos = pos;
 		// this.vel = new Vector(0, 0);
-		this.vel = Vector.randomUnit();
+		this.vel = Vector.randomUnit().mul(maxSpeed);
 		this.acc = Vector.zero();
 
 		this.maxSpeed = maxSpeed;
@@ -35,7 +35,7 @@ class Boid {
 		
 		this.pos = this.pos.add(this.vel.mul(delta));
 		
-		this.acc = this.acc.mul(0);
+		// this.acc = this.acc.mul(0);
 
 		this.pos.wrap(Vector.one());
 	}
@@ -60,9 +60,14 @@ class Boid {
 			const dist = dif.mag();
 
 			if (dist < this.perceptionRadius * this.seperationMultiplier) {
+
+				const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
+
+				if (angle < this.perceptionAngle) {
 				// inversely proportional to distance
-				sum = sum.add(dif.normalize().div(dist));
-				count++;
+					sum = sum.add(dif.normalize().div(dist));
+					count++;
+				}
 			}
 		}
 
@@ -89,12 +94,12 @@ class Boid {
 			const dist = dif.mag();
 
 			if (dist < this.perceptionRadius) {
-				// const angle = this.vel.angleBetween(dif);
+				const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
 
-				// if (angle < this.perceptionAngle) {
+				if (angle < this.perceptionAngle) {
 					sum = sum.add(boid.vel);
 					count++;
-				// }
+				}
 			}
 		}
 		if (count > 0) {
@@ -119,12 +124,13 @@ class Boid {
 			const dist = dif.mag();
 
 			if (dist < this.perceptionRadius) {
-				// const angle = this.vel.angleBetween(dif);
 
-				// if (angle < this.perceptionAngle) {
+				const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
+
+				if (angle < this.perceptionAngle) {
 					sum = sum.add(boid.pos);
 					count++;
-				// }
+				}
 			}
 		}
 
@@ -154,21 +160,34 @@ class Boid {
 		if (drawDebug) {
 			context.strokeStyle = this.color;
 			context.beginPath();
+			context.moveTo(drawPos.x, drawPos.y);
+
+			const startAngle = this.vel.angle() - this.perceptionAngle / 2;
+			const endAngle = this.vel.angle() + this.perceptionAngle / 2;
+
+			context.lineTo(
+				drawPos.x + Math.cos(startAngle) * drawRadius,
+				drawPos.y + Math.sin(startAngle) * drawRadius
+			);
+
 			context.arc(
 				drawPos.x, drawPos.y,
 				drawRadius,
-				this.vel.angle() - this.perceptionAngle / 2,
-				this.vel.angle() + this.perceptionAngle / 2
+				startAngle,
+				endAngle,
 			);
+			context.lineTo(drawPos.x, drawPos.y);
 			context.stroke();
+
 
 			context.strokeStyle = this.color;
 			context.beginPath();
 			context.moveTo(drawPos.x, drawPos.y);
-			const target = drawPos.add(this.vel.normalize().mul(drawRadius));
+			const target = drawPos.add(this.vel.normalize().mul(drawRadius * this.vel.mag() / this.maxSpeed));
 			context.lineTo(target.x, target.y);
 			context.stroke();
 		}
+
 
 		context.fillStyle = this.color;
 		context.beginPath();

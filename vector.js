@@ -75,6 +75,9 @@ class Vector {
 	static fromArray(array) {
 		return new Vector(array[0], array[1]);
 	}
+	static fromAngle(angle) {
+		return new Vector(Math.cos(angle), Math.sin(angle));
+	}
 
 	static randomUnit() {
 		const angle = Math.random() * Math.PI * 2;
