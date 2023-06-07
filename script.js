@@ -29,12 +29,9 @@ const flock = new Flock();
         const pos = Vector.randomRect();
         const color = randomColor();
         // const color = colors[Math.floor(Math.random() * colors.length)];
-        const boid = new Boid(pos, 0.5, 0.75, 0.1, Math.PI * 1.5, 0.75, 1, 1, 1, true, color);
+        const boid = new Boid(pos, 0.5, 0.75, 0.1, Math.PI * 2, 0.75, 1, 1, 1, true, color);
         flock.addBoid(boid);
     }
-
-    // flock.addBoid(new Boid(new Vector(0.1, 0.1), 0.5, 0.75, 0.1, Math.PI * 1.5, 0.75, 1, 1, 1, "red"));
-    // flock.addBoid(new Boid(new Vector(0.15, 0.15), 0.5, 0.75, 0.1, Math.PI * 1.5, 0.75, 1, 1, 1, "blue"));
 }
 
 

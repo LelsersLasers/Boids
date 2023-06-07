@@ -30,6 +30,11 @@ class Vector {
 		}
 		return this.div(mag);
 	}
+    dist(other) {
+        const xDif = this.x - other.x;
+        const yDif = this.y - other.y;
+        return Math.sqrt(xDif * xDif + yDif * yDif);
+    }
 	limit(max) {
 		const mag = this.mag();
 		if (mag > max) {
