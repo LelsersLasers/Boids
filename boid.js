@@ -5,6 +5,7 @@ class Boid {
 		perceptionRadius, perceptionAngle,
 		seperationMultiplier,
 		separationWeight, alignmentWeight, cohesionWeight,
+        drawMode, // true: triangle, false: circle
 		color
 	) {
 		this.pos = pos;
@@ -24,6 +25,7 @@ class Boid {
 		this.alignmentWeight = alignmentWeight;
 		this.cohesionWeight = cohesionWeight;
 
+        this.drawMode = drawMode;
 		this.color = color;
 	}
 
@@ -188,10 +190,29 @@ class Boid {
 			context.stroke();
 		}
 
+        if (this.drawMode) {
+            // isosceles triangle
+            const tail = drawPos.sub(this.vel.normalize().mul(DRAW_RATIO * context.canvas.width));
+            const halfTailLen = 2 / Math.tan(Math.PI / 2 - DRAW_ANGLE / 2) * DRAW_RATIO * context.canvas.width;
+            const halfTail = this.vel.normalize().mul(halfTailLen).rotate(Math.PI / 2);
 
-		context.fillStyle = this.color;
-		context.beginPath();
-		context.arc(drawPos.x, drawPos.y, DRAW_RATIO * context.canvas.width, 0, 2 * Math.PI);
-		context.fill();
+            const p1 = drawPos.add(this.vel.normalize().mul(DRAW_RATIO * context.canvas.width));
+            const p2 = tail.add(halfTail);
+            const p3 = tail.sub(halfTail);
+
+            context.fillStyle = this.color;
+            context.beginPath();
+            context.moveTo(p1.x, p1.y);
+            context.lineTo(p2.x, p2.y);
+            context.lineTo(p3.x, p3.y);
+            context.lineTo(p1.x, p1.y);
+            context.fill();
+        } else {
+            // circle
+            context.fillStyle = this.color;
+            context.beginPath();
+            context.arc(drawPos.x, drawPos.y, DRAW_RATIO * context.canvas.width, 0, 2 * Math.PI);
+            context.fill();
+        }
 	}
 }

@@ -1,4 +1,5 @@
 const DRAW_RATIO = 0.01;
+const DRAW_ANGLE = Math.PI / 4; // 30 degrees
 
 const todo = () => console.error("TODO");
 
@@ -24,11 +25,11 @@ const flock = new Flock();
     //     "#B48EAD",
     // ];
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 200; i++) {
         const pos = Vector.randomRect();
         const color = randomColor();
         // const color = colors[Math.floor(Math.random() * colors.length)];
-        const boid = new Boid(pos, 0.5, 0.75, 0.1, Math.PI * 1.5, 0.75, 1, 1, 1, color);
+        const boid = new Boid(pos, 0.5, 0.75, 0.1, Math.PI * 1.5, 0.75, 1, 1, 1, true, color);
         flock.addBoid(boid);
     }
 
