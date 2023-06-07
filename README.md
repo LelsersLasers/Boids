@@ -19,6 +19,7 @@
 			- Avoid mixing with other species
 - Wall avoidance vs wrap UI option
 - Trace paths
+    - How to deal with wrap??
 - Performance??
 	- Chunk into quads to not check all boids
 	- Only loop over once to calculate all forces

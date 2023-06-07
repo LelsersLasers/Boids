@@ -2,42 +2,27 @@ class Boid {
     // static idCount = 0;
 	constructor(
 		pos,
-		maxSpeed, maxForce,
-		perceptionRadius, perceptionAngle,
-		seperationMultiplier,
-		separationWeight, alignmentWeight, cohesionWeight,
-        drawMode, // true: triangle, false: circle
 		color
 	) {
 		this.pos = pos;
-		// this.vel = new Vector(0, 0);
-		this.vel = Vector.randomUnit().mul(maxSpeed);
+		this.vel = Vector.randomUnit().mul(BoidSettings.maxSpeed);
 		// this.acc = Vector.zero();
 
-		this.maxSpeed = maxSpeed;
-		this.maxForce = maxForce;
-
-		this.perceptionRadius = perceptionRadius;
-		this.perceptionAngle = perceptionAngle;
-
-		this.seperationMultiplier = seperationMultiplier;
-
-		this.separationWeight = separationWeight;
-		this.alignmentWeight = alignmentWeight;
-		this.cohesionWeight = cohesionWeight;
-
-        this.drawMode = drawMode;
 		this.color = color;
+        this.history = [];
 
         // this.id = Boid.idCount++;
 	}
 
 	update(delta) {
+
 		// this.acc = this.acc.limit(this.maxForce);
 
 		// this.vel = this.vel.add(this.acc.mul(delta));
-		this.vel = this.vel.limit(this.maxSpeed);
+		this.vel = this.vel.limit(BoidSettings.maxSpeed);
 		
+        this.history.push(this.pos);
+        this.history = this.history.slice(-Math.round(BoidSettings.historyLength * delta));
 		this.pos = this.pos.add(this.vel.mul(delta));
 		
 		// this.acc = this.acc.mul(0);
@@ -80,7 +65,7 @@ class Boid {
             }
         }
 
-        // if (closestDist < this.perceptionRadius && this.id == 0) {
+        // if (closestDist < BoidSettings.perceptionRadius && this.id == 0) {
         //     context.strokeStyle = "red";
         //     context.beginPath();
         //     const drawPos = this.pos.mod(Vector.one()).mul(context.canvas.width);
@@ -107,15 +92,15 @@ class Boid {
 
             const dif = boidScreenPos.sub(screenPos);
             const dist = dif.mag();
-            if (dist < this.perceptionRadius * this.seperationMultiplier) {
+            if (dist < BoidSettings.perceptionRadius * BoidSettings.seperationMultiplier) {
                 const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
-                if (angle < this.perceptionAngle) {
+                if (angle < BoidSettings.perceptionAngle) {
                     sum = sum.add(screenPos.sub(boidScreenPos));
                 }
             }
         }
 
-        this.vel = this.vel.add(sum.mul(this.separationWeight));
+        this.vel = this.vel.add(sum.mul(BoidSettings.separationWeight));
 	}
 	alignment(flock) {
         const screenPos = this.pos.mod(Vector.one());
@@ -130,9 +115,9 @@ class Boid {
 
             const dif = boidScreenPos.sub(screenPos);
             const dist = dif.mag();
-            if (dist < this.perceptionRadius) {
+            if (dist < BoidSettings.perceptionRadius) {
                 const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
-                if (angle < this.perceptionAngle) {
+                if (angle < BoidSettings.perceptionAngle) {
                     sum = sum.add(boid.vel);
                     count++;
                 }
@@ -141,7 +126,7 @@ class Boid {
 
         if (count > 0) {
             sum = sum.div(count);
-            this.vel = this.vel.add(sum.mul(this.alignmentWeight));
+            this.vel = this.vel.add(sum.mul(BoidSettings.alignmentWeight));
         }
 	}
 	
@@ -158,9 +143,9 @@ class Boid {
 
             const dif = boidScreenPos.sub(screenPos);
             const dist = dif.mag();
-            if (dist < this.perceptionRadius) {
+            if (dist < BoidSettings.perceptionRadius) {
                 const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
-                if (angle < this.perceptionAngle) {
+                if (angle < BoidSettings.perceptionAngle) {
                     sum = sum.add(boidScreenPos);
                     count++;
                 }
@@ -169,7 +154,7 @@ class Boid {
 
         if (count > 0) {
             sum = sum.div(count);
-            this.vel = this.vel.add(sum.mul(this.cohesionWeight));
+            this.vel = this.vel.add(sum.mul(BoidSettings.cohesionWeight));
         }
 	}
 
@@ -186,15 +171,15 @@ class Boid {
 
 	render(context, drawDebug = false) {
 		const drawPos = this.pos.mod(Vector.one()).mul(context.canvas.width);
-		const drawRadius = this.perceptionRadius * context.canvas.width;
+		const drawRadius = BoidSettings.perceptionRadius * context.canvas.width;
 
 		if (drawDebug) {
 			context.strokeStyle = this.color;
 			context.beginPath();
 			context.moveTo(drawPos.x, drawPos.y);
 
-			const startAngle = this.vel.angle() - this.perceptionAngle / 2;
-			const endAngle = this.vel.angle() + this.perceptionAngle / 2;
+			const startAngle = this.vel.angle() - BoidSettings.perceptionAngle / 2;
+			const endAngle = this.vel.angle() + BoidSettings.perceptionAngle / 2;
 
 			context.lineTo(
 				drawPos.x + Math.cos(startAngle) * drawRadius,
@@ -213,7 +198,7 @@ class Boid {
             context.beginPath();
             context.arc(
 				drawPos.x, drawPos.y,
-				drawRadius * this.seperationMultiplier,
+				drawRadius * BoidSettings.seperationMultiplier,
 				startAngle,
 				endAngle,
 			);
@@ -223,12 +208,24 @@ class Boid {
 			context.strokeStyle = this.color;
 			context.beginPath();
 			context.moveTo(drawPos.x, drawPos.y);
-			const target = drawPos.add(this.vel.normalize().mul(drawRadius * this.vel.mag() / this.maxSpeed));
+			const target = drawPos.add(this.vel.normalize().mul(drawRadius * this.vel.mag() / BoidSettings.maxSpeed));
 			context.lineTo(target.x, target.y);
 			context.stroke();
 		}
 
-        if (this.drawMode) {
+        if (BoidSettings.drawHistory) {
+            context.strokeStyle = this.color;
+            context.beginPath();
+            context.moveTo(drawPos.x, drawPos.y);
+            for (let i = 0; i < this.history.length; i++) {
+                const p = this.history[i].mod(Vector.one()).mul(context.canvas.width);
+                context.lineTo(p.x, p.y);
+            }
+
+            context.stroke();
+        }
+
+        if (BoidSettings.drawMode) {
             // isosceles triangle
             const tail = drawPos.sub(this.vel.normalize().mul(DRAW_RATIO * context.canvas.width));
             const halfTailLen = 2 / Math.tan(Math.PI / 2 - DRAW_ANGLE / 2) * DRAW_RATIO * context.canvas.width;

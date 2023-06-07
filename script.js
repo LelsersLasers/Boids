@@ -13,7 +13,23 @@ const canvas = document.getElementsByTagName("canvas")[0];
 
 const context = canvas.getContext("2d");
 
+{
+    BoidSettings.maxSpeed = 0.5;
 
+    BoidSettings.perceptionRadius = 0.1;
+    BoidSettings.perceptionAngle = Math.PI * 2;
+
+    BoidSettings.seperationMultiplier = 0.75;
+
+    BoidSettings.separationWeight = 1;
+    BoidSettings.alignmentWeight = 1;
+    BoidSettings.cohesionWeight = 1;
+
+    BoidSettings.drawMode = true;
+
+    BoidSettings.historyLength = 5;
+    BoidSettings.drawHistory = false;
+}
 
 const flock = new Flock();
 {
@@ -29,7 +45,7 @@ const flock = new Flock();
         const pos = Vector.randomRect();
         const color = randomColor();
         // const color = colors[Math.floor(Math.random() * colors.length)];
-        const boid = new Boid(pos, 0.5, 0.75, 0.1, Math.PI * 2, 0.75, 1, 1, 1, true, color);
+        const boid = new Boid(pos, color);
         flock.addBoid(boid);
     }
 }
