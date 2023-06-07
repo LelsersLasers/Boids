@@ -27,13 +27,41 @@ class Boid {
 		// this.acc = this.acc.mul(0);
 	}
 
-	calculateBehavior(flock) {
+	calculateBehavior(flock, obstacles) {
 		this.seperation(flock);
 		this.alignment(flock);
 		this.cohesion(flock);
+
+        this.avoidObstacles(obstacles);
 	}
 
+    avoidObstacles(obstacles) {
+        const screenPos = this.pos.mod(Vector.one());
+        let sum = Vector.zero();
+        let count = 0;
+
+        for (let i = 0; i < obstacles.length; i++) {
+            const obstacle = obstacles[i];
+
+            const obstacleScreenPos = this.closestBoidScreenPos(obstacle);
+
+            const dif = obstacleScreenPos.sub(screenPos);
+            const dist = dif.mag();
+            if (dist < obstacle.radius + BoidSettings.perceptionRadius) {
+                const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
+                if (angle < BoidSettings.perceptionAngle) {
+                    sum = sum.add(screenPos.sub(obstacleScreenPos));
+                    count++;
+                }
+            }
+        }
+
+        this.acc = this.acc.add(sum.mul(BoidSettings.obstacleStrength));
+    }
+
     closestBoidScreenPos(other) {
+        // other must have `pos`
+
         const screenPos = this.pos.mod(Vector.one());
         const otherScreenPos = other.pos.mod(Vector.one());
 

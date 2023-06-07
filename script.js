@@ -3,13 +3,18 @@ const DRAW_ANGLE = Math.PI / 4; // 30 degrees
 
 const todo = () => console.error("TODO");
 
-const canvas = document.getElementsByTagName("canvas")[0];
-// canvas.addEventListener("mousemove", function (event) {
-//     const rect = canvas.getBoundingClientRect();
+const mouseObstacle = new Obstacle(Vector.zero(), 0.05);
 
-//     const x = event.clientX - rect.left;
-//     const y = event.clientY - rect.top;
-// });
+const canvas = document.getElementsByTagName("canvas")[0];
+canvas.addEventListener("mousemove", function (event) {
+    const rect = canvas.getBoundingClientRect();
+
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    const pos = new Vector(x / canvas.width, y / canvas.height);
+    mouseObstacle.pos = pos;
+});
 
 const context = canvas.getContext("2d");
 
@@ -31,6 +36,8 @@ const context = canvas.getContext("2d");
 
     BoidSettings.historyLength = 5;
     BoidSettings.drawHistory = false;
+
+    BoidSettings.obstacleStrength = 5;
 }
 
 const flock = new Flock();
@@ -104,10 +111,14 @@ function render() {
 
 
     if (!paused) {
-        flock.update(delta);
+        flock.update(delta, [mouseObstacle]);
     }
 
     flock.render(context);
+
+    if (BoidSettings.obstacleStrength > 0) {
+        mouseObstacle.render(context);
+    }
 
     t1 = performance.now();
     delta = (t1 - t0) / 1000;

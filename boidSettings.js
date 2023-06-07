@@ -17,4 +17,5 @@ class BoidSettings {
     static historyLength;
     static drawHistory;
 
+    static obstacleStrength;
 }

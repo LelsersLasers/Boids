@@ -5,9 +5,6 @@
 
 ## TODO
 
-- fix math and weights
-	- Make it more systematic/standarized
-- Boids can sense through wrap-around
 - Obstacle avoidance
 - Color options:
 	- Random

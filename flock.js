@@ -3,12 +3,16 @@ class Flock {
 		this.boids = [];
 	}
 
-	update(delta) {
+	update(delta, obstacles) {
 		for (let i = 0; i < this.boids.length; i++) {
 			const boid = this.boids[i];
-			boid.calculateBehavior(this);
-			boid.update(delta);
+			boid.calculateBehavior(this, obstacles);
 		}
+
+        for (let i = 0; i < this.boids.length; i++) {
+            const boid = this.boids[i];
+            boid.update(delta);
+        }
 	}
 
 	render(context) {
