@@ -28,158 +28,118 @@
         <div id="settings">
             <span id="fpsText">FPS: 60</span>
             <br />
-<!-- 
-
-            <span id="epochesText">Epochs: 0</span>
-            <br />
-
-            <span id="costText">Cost: 1.0</span>
-            <br />
-
-            <span id="gradientText">Gradient Magnitude: 0.0</span>
-            <br />
 
             <hr />
-
-            <label for="RESOLUTION">Resolution:</label>
-            <input type="text" id="RESOLUTION" value="75" />
-            <br class="spacing" />
-
-            <label for="ITERATIONS">Epochs per frame:</label>
-            <input type="text" id="ITERATIONS" value="1" />
-            <br class="spacing" />
-
-            <hr />
-
-			<label for="HIDDEN_LAYERS">Hidden Layers:</label>
-            <input type="text" id="HIDDEN_LAYERS" value="6, 6" />
-            <br class="spacing" />
-
-			<label for="ACTIVATION">Activation:</label>
-			<select id="ACTIVATION" name="ACTIVATION">
-                <option value="leakyRelu">Leaky ReLU</option>
-				<option value="relu">ReLU</option>
-				<option value="sigmoid">Sigmoid</option>
-				<option value="tanh">Tanh</option>
-				<option value="linear">Linear</option>
-			</select>
-			<br class="spacing" />
-
-			<label for="LEARNING_RATE">Learning Rate:</label>
-            <input type="text" id="LEARNING_RATE" value="0.01" />
-            <br class="spacing" />
-
-            <label for="MOMENTUM">Momentum:</label>
-            <input type="text" id="MOMENTUM" value="0.9" />
-            <br class="spacing" />
-
-            <br />
-
-            <label for="INIT">Weight Initialization:</label>
-			<select id="INIT" name="INIT">
-				<option value="random">Random</option>
-				<option value="xavier">Xavier</option>
-				<option value="he">He</option>
-			</select>
-			<br class="spacing" />
-
-            <br />
-
-            <label for="REGULARIZATION">Regularization:</label>
-			<select id="REGULARIZATION" name="REGULARIZATION">
-				<option value="none">None</option>
-				<option value="L1">L1</option>
-				<option value="L2">L2</option>
-			</select>
-			<br class="spacing" />
-
-            <label for="REGULARIZATION_RATE">Regularization Rate:</label>
-            <input type="text" id="REGULARIZATION_RATE" value="0.001" />
-            <br class="spacing" />
-
-            <br />
-
-            <label for="INPUTS">Inputs:</label>
             
-            <div class="flex-container">
-                <div>
-                    <label class="leftTab" for="INPUT-X">X:</label>
-                    <br />
-                    <label class="leftTab" for="INPUT-Y">Y:</label>
-                    <br />
-                    <label class="leftTab" for="INPUT-X^2">X^2:</label>
-                    <br />
-                    <label class="leftTab" for="INPUT-Y^2">Y^2:</label>
-                    <br />
-                    <label class="leftTab" for="INPUT-X*Y">X*Y:</label>
-                    <br />
-                    <label class="leftTab" for="INPUT-SIN(X)">sin(X):</label>
-                    <br />
-                    <label class="leftTab" for="INPUT-SIN(Y)">sin(Y):</label>
-                    <br />
-                </div>
-                <div>
-                    <input class="leftTab" type="checkbox" id="INPUT-X" name="INPUT-X" checked />
-                    <br />
-                    <input class="leftTab" type="checkbox" id="INPUT-Y" name="INPUT-Y" checked />
-                    <br />
-                    <input class="leftTab" type="checkbox" id="INPUT-X^2" name="INPUT-X^2" />
-                    <br />
-                    <input class="leftTab" type="checkbox" id="INPUT-Y^2" name="INPUT-Y^2" />
-                    <br />
-                    <input class="leftTab" type="checkbox" id="INPUT-X*Y" name="INPUT-X*Y" />
-                    <br />
-                    <input class="leftTab" type="checkbox" id="INPUT-SIN(X)" name="INPUT-SIN(X)" />
-                    <br />
-                    <input class="leftTab" type="checkbox" id="INPUT-SIN(Y)" name="INPUT-SIN(Y)" />
-                    <br />
-                </div>
+            <label for="seperationWeight">Seperation Weight:</label>
+            <output>2.0</output>
+            <input type="range" id="seperationWeight" name="seperationWeight" min="0.0" max="5.0" step="0.1" value="2.0" oninput="this.previousElementSibling .value = this.value" />
+            <br class="spacing" />
+
+            <label for="alignmentWeight">Alignment Weight:</label>
+            <output>1.0</output>
+            <input type="range" id="alignmentWeight" name="alignmentWeight" min="0.0" max="5.0" step="0.1" value="1.0" oninput="this.previousElementSibling .value = this.value" />
+            <br class="spacing" />
+
+            <label for="cohesionWeight">Cohesion Weight:</label>
+            <output>1.0</output>
+            <input type="range" id="cohesionWeight" name="cohesionWeight" min="0.0" max="5.0" step="0.1" value="1.0" oninput="this.previousElementSibling .value = this.value" />
+            <br class="spacing" />
+
+            <br />
+
+            <label for="seperationMultiplier">Seperation Multiplier:</label>
+            <output>0.5</output>
+            <input type="range" id="seperationMultiplier" name="seperationMultiplier" min="0.0" max="1.0" step="0.01" value="0.50" oninput="this.previousElementSibling .value = this.value" />
+            <br class="spacing" />
+
+            <br />
+
+            <label for="perceptionRadius">Perception Radius:</label>
+            <output>10</output>
+            <input type="range" id="perceptionRadius" name="perceptionRadius" min="0" max="100" step="1" value="10" oninput="this.previousElementSibling .value = this.value" />
+            <br class="spacing" />
+
+            <label for="perceptionAngle">Perception Angle:</label>
+            <output>270</output>
+            <input type="range" id="perceptionAngle" name="perceptionAngle" min="0" max="360" step="1" value="270" oninput="this.previousElementSibling .value = this.value" />
+            <br class="spacing" />
+
+            <br />
+
+            <label for="numBoids">Number of Boids:</label>
+            <output>100</output>
+            <input type="range" id="numBoids" name="numBoids" min="0" max="500" step="1" value="100" oninput="this.previousElementSibling .value = this.value" />
+            <br class="spacing" />
+
+            <label for="species">Multiple Species:</label>
+            <input type="checkbox" id="species" />
+            <br class="spacing" />
+
+            <br />
+
+            <label for="avoidWalls">Avoid Walls:</label>
+            <input type="checkbox" id="avoidWalls" />
+            <br class="spacing" />
+
+            <div id="avoidWallsExtra" hidden>
+                <label for="wallMargin">Wall Margin:</label>
+                <output>0.1</output>
+                <input type="range" id="wallMargin" name="wallMargin" min="0.0" max="0.5" step="0.01" value="0.1" oninput="this.previousElementSibling .value = this.value" />
+                <br class="spacing" />
+
+                <label for="wallMargin">Wall Turn Strength:</label>
+                <output>7.5</output>
+                <input type="range" id="wallMargin" name="wallMargin" min="0" max="20" step="0.1" value="7.5" oninput="this.previousElementSibling .value = this.value" />
+                <br class="spacing" />
             </div>
 
-            <br />
-            
-            <button onclick="apply()">Apply</button>
+            <label for="maxVel">Max Velocity</label>
+            <output>0.33</output>
+            <input type="range" id="maxVel" name="maxVel" min="0.0" max="1.0" step="0.01" value="0.33" oninput="this.previousElementSibling .value = this.value" />
+            <br class="spacing" />
+
+            <label for="maxAcc">Max Acceleration</label>
+            <output>5</output>
+            <input type="range" id="maxAcc" name="maxAcc" min="0.0" max="10" step="0.1" value="5" oninput="this.previousElementSibling .value = this.value" />
+            <br class="spacing" />
+
+            <label for="maxAcc">Acceleration Multiplier</label>
+            <output>7.5</output>
+            <input type="range" id="maxAcc" name="maxAcc" min="0.0" max="20.0" step="0.1" value="7.5" oninput="this.previousElementSibling .value = this.value" />
+            <br class="spacing" />
 
             <br />
-            <hr />
+           
+            <label for="drawHistory">Draw Trails:</label>
+            <input type="checkbox" id="drawHistory" />
+            <br class="spacing" />
 
-            <div id="liveUpdate">
-
-                <label for="COLOR">Place color:</label>
-                <br />
-                <input type="radio" id="red" name="COLOR" value="true" checked>
-                <label for="red">Red</label>
-                <br />
-                <input type="radio" id="green" name="COLOR" value="false">
-                <label for="green">Green</label>
-                <br />
-                <input type="radio" id="blue" name="COLOR" value="false">
-                <label for="blue">Blue</label>
-                <br />
-                <input type="radio" id="white" name="COLOR" value="false">
-                <label for="white">White</label>
-                <br />
-                <input type="radio" id="black" name="COLOR" value="false">
-                <label for="black">Black</label>
-                <br />
-                <input type="radio" id="custom" name="COLOR" value="false">
-                <label for="custom">Custom</label>
-                    <label for="CUSTOM_COLOR">Color:</label>
-                    <input type="text" id="CUSTOM_COLOR" value="180, 142, 173" />
-                <br class="spacing"/>
-
+            <div id="drawHistoryExtra">
+                <label for="historyLength">Trail Length:</label>
+                <output>50</output>
+                <input type="range" id="historyLength" name="historyLength" min="0" max="100" step="1" value="50" oninput="this.previousElementSibling .value = this.value" />
+                <br class="spacing" />
             </div>
+
+            <label for="drawTriangles">Draw Trails:</label>
+            <input type="checkbox" id="drawTriangles" />
+            <br class="spacing" />
+
+            <br />
+
+            <label for="obstacleStrength">Obstacle Strength:</label>
+            <output>0</output>
+            <input type="range" id="obstacleStrength" name="obstacleStrength" min="0.0" max="5.0" step="0.1" value="0" oninput="this.previousElementSibling .value = this.value" />
+            <br class="spacing" />
 
             <hr />
 
             <button id="pauseButton" onclick="togglePause()" style="margin-top: 0.5em;">Pause</button>
             <br />
 
-            <button onclick="clearDataPoints()">Clear Datapoints</button>
+            <button onclick="resetBoids()">Reset Boids</button>
             <br />
-
-            <button onclick="resetNetwork()">Reset Network Weights</button> -->
-
         </div>
 
     </div>

@@ -1,8 +1,6 @@
 const DRAW_RATIO = 0.01;
 const DRAW_ANGLE = Math.PI / 4; // 30 degrees
 
-const todo = () => console.error("TODO");
-
 const mouseObstacle = new Obstacle(Vector.zero(), 0.05);
 
 const canvas = document.getElementsByTagName("canvas")[0];
@@ -45,18 +43,13 @@ const context = canvas.getContext("2d");
 
     BoidSettings.numBoids = 100;
 
-    BoidSettings.species = true;
+    BoidSettings.species = false;
 }
 
-const flock = new Flock();
+let flock = new Flock();
 
 
 let paused = false;
-
-function apply() {
-    
-    todo();
-}
 
 
 function resize() {
@@ -76,6 +69,9 @@ function togglePause() {
     paused = !paused;
     let text = paused ? "Resume" : "Pause";
     document.getElementById("pauseButton").innerHTML = text;
+}
+function resetBoids() {
+    flock = new Flock();
 }
 
 function rgbToFillStyle(r, g, b) {
@@ -115,8 +111,8 @@ function render() {
     delta = (t1 - t0) / 1000;
     t0 = performance.now();
 
-    const fps = Math.floor(1 / delta);
     document.getElementById("fpsText").innerHTML = "FPS: " + Math.round(1 / delta);
+
 
 
     window.requestAnimationFrame(render);

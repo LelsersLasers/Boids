@@ -5,6 +5,7 @@
 
 ## TODO
 
+- CONNECT UI TO SETTINGS
 - Performance??
 	- Chunk into quads to not check all boids
     - Vector functions don't create new vectors
@@ -15,7 +16,6 @@
 
 - Top
     - Info: FPS
-    - Delta: ms
 - HR
 - Middle
     - 
