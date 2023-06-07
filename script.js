@@ -15,11 +15,13 @@ const context = canvas.getContext("2d");
 
 {
     BoidSettings.maxSpeed = 0.5;
+    BoidSettings.maxForce = 1;
+    BoidSettings.accMultiplier = 10;
 
-    BoidSettings.perceptionRadius = 0.1;
-    BoidSettings.perceptionAngle = Math.PI * 2;
+    BoidSettings.perceptionRadius = 0.15;
+    BoidSettings.perceptionAngle = Math.PI * 1.5;
 
-    BoidSettings.seperationMultiplier = 0.75;
+    BoidSettings.seperationMultiplier = 0.5;
 
     BoidSettings.separationWeight = 1;
     BoidSettings.alignmentWeight = 1;
@@ -41,7 +43,7 @@ const flock = new Flock();
     //     "#B48EAD",
     // ];
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 100; i++) {
         const pos = Vector.randomRect();
         const color = randomColor();
         // const color = colors[Math.floor(Math.random() * colors.length)];

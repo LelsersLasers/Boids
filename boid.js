@@ -6,7 +6,7 @@ class Boid {
 	) {
 		this.pos = pos;
 		this.vel = Vector.randomUnit().mul(BoidSettings.maxSpeed);
-		// this.acc = Vector.zero();
+		this.acc = Vector.zero();
 
 		this.color = color;
         this.history = [];
@@ -15,19 +15,16 @@ class Boid {
 	}
 
 	update(delta) {
+        this.acc = this.acc.limit(BoidSettings.maxForce);
+		this.vel = this.vel.add(this.acc.mul(delta * BoidSettings.accMultiplier));
 
-		// this.acc = this.acc.limit(this.maxForce);
-
-		// this.vel = this.vel.add(this.acc.mul(delta));
-		this.vel = this.vel.limit(BoidSettings.maxSpeed);
+        this.vel = this.vel.limit(BoidSettings.maxSpeed);
 		
         this.history.push(this.pos);
         this.history = this.history.slice(-Math.round(BoidSettings.historyLength * delta));
 		this.pos = this.pos.add(this.vel.mul(delta));
 		
 		// this.acc = this.acc.mul(0);
-
-		// this.pos.wrap(Vector.one());
 	}
 
 	calculateBehavior(flock) {
@@ -100,7 +97,7 @@ class Boid {
             }
         }
 
-        this.vel = this.vel.add(sum.mul(BoidSettings.separationWeight));
+        this.acc = this.acc.add(sum.mul(BoidSettings.separationWeight));
 	}
 	alignment(flock) {
         const screenPos = this.pos.mod(Vector.one());
@@ -126,7 +123,7 @@ class Boid {
 
         if (count > 0) {
             sum = sum.div(count);
-            this.vel = this.vel.add(sum.mul(BoidSettings.alignmentWeight));
+            this.acc = this.acc.add(sum.mul(BoidSettings.alignmentWeight));
         }
 	}
 	
@@ -154,20 +151,9 @@ class Boid {
 
         if (count > 0) {
             sum = sum.div(count);
-            this.vel = this.vel.add(sum.mul(BoidSettings.cohesionWeight));
+            this.acc = this.acc.add(sum.sub(screenPos).mul(BoidSettings.cohesionWeight));
         }
 	}
-
-	// seek(target) {
-	// 	const desiredDif = target.sub(this.pos);
-	// 	const desiredVel = desiredDif.normalize().mul(this.maxSpeed);
-	// 	const steer = desiredVel.sub(this.vel);
-	// 	return steer;
-	// }
-
-	// applyForce(force) {
-	// 	this.acc = this.acc.add(force);
-	// }
 
 	render(context, drawDebug = false) {
 		const drawPos = this.pos.mod(Vector.one()).mul(context.canvas.width);

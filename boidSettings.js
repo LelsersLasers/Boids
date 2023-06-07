@@ -1,5 +1,7 @@
 class BoidSettings {
     static maxSpeed;
+    static maxForce;
+    static accMultiplier;
 
     static perceptionRadius;
     static perceptionAngle;
