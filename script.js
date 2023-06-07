@@ -87,9 +87,9 @@ function rgbToFillStyle(r, g, b) {
     return "rgb(" + scaledR + "," + scaledG + "," + scaledB + ")";
 }
 function randomColor() {
-    let r = Math.random();
-    let g = Math.random();
-    let b = Math.random();
+    let r = Math.random() * 0.8 + 0.2;
+    let g = Math.random() * 0.8 + 0.2;
+    let b = Math.random() * 0.8 + 0.2;
 
     return rgbToFillStyle(r, g, b);
 }
