@@ -18,4 +18,8 @@ class BoidSettings {
     static drawHistory;
 
     static obstacleStrength;
+
+    static avoidWalls; // false: wrap
+    static wallMargin;
+    static wallTurnStrength;
 }

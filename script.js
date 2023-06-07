@@ -19,45 +19,34 @@ canvas.addEventListener("mousemove", function (event) {
 const context = canvas.getContext("2d");
 
 {
-    BoidSettings.maxSpeed = 0.5;
+    BoidSettings.maxSpeed = 0.33;
     BoidSettings.maxForce = 1;
-    BoidSettings.accMultiplier = 10;
+    BoidSettings.accMultiplier = 7.5;
 
-    BoidSettings.perceptionRadius = 0.15;
+    BoidSettings.perceptionRadius = 0.075;
     BoidSettings.perceptionAngle = Math.PI * 1.5;
 
     BoidSettings.seperationMultiplier = 0.5;
 
-    BoidSettings.separationWeight = 1;
+    BoidSettings.separationWeight = 2;
     BoidSettings.alignmentWeight = 1;
     BoidSettings.cohesionWeight = 1;
 
     BoidSettings.drawMode = true;
 
-    BoidSettings.historyLength = 5;
-    BoidSettings.drawHistory = false;
+    BoidSettings.historyLength = 100; // not related to delta!!
+    BoidSettings.drawHistory = true;
 
-    BoidSettings.obstacleStrength = 5;
+    BoidSettings.obstacleStrength = 0;
+
+    BoidSettings.avoidWalls = false;
+    BoidSettings.wallMargin = 0.1;
+    BoidSettings.wallTurnStrength = 7.5;
+
+    BoidSettings.numBoids = 100;
 }
 
 const flock = new Flock();
-{
-    // const colors = [
-    //     "#BF616A",
-    //     "#D08770",
-    //     "#EBCB8B",
-    //     "#A3BE8C",
-    //     "#B48EAD",
-    // ];
-
-    for (let i = 0; i < 100; i++) {
-        const pos = Vector.randomRect();
-        const color = randomColor();
-        // const color = colors[Math.floor(Math.random() * colors.length)];
-        const boid = new Boid(pos, color);
-        flock.addBoid(boid);
-    }
-}
 
 
 let paused = false;
@@ -124,7 +113,8 @@ function render() {
     delta = (t1 - t0) / 1000;
     t0 = performance.now();
 
-    // const fps = Math.floor(1 / delta);
+    const fps = Math.floor(1 / delta);
+    document.getElementById("fpsText").innerHTML = "FPS: " + Math.round(1 / delta);
 
 
     window.requestAnimationFrame(render);

@@ -1,6 +1,22 @@
 class Flock {
 	constructor() {
 		this.boids = [];
+
+        // const colors = [
+        //     "#BF616A",
+        //     "#D08770",
+        //     "#EBCB8B",
+        //     "#A3BE8C",
+        //     "#B48EAD",
+        // ];
+    
+        for (let i = 0; i < BoidSettings.numBoids; i++) {
+            const pos = Vector.randomRect();
+            const color = randomColor();
+            // const color = colors[Math.floor(Math.random() * colors.length)];
+            const boid = new Boid(pos, color);
+            this.addBoid(boid);
+        }
 	}
 
 	update(delta, obstacles) {

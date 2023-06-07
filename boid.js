@@ -20,11 +20,22 @@ class Boid {
 
         this.vel = this.vel.limit(BoidSettings.maxSpeed);
 		
-        this.history.push(this.pos);
-        this.history = this.history.slice(-Math.round(BoidSettings.historyLength * delta));
-		this.pos = this.pos.add(this.vel.mul(delta));
-		
-		// this.acc = this.acc.mul(0);
+        const move = this.vel.mul(delta);
+
+        const oldPos = this.pos;
+		this.pos = this.pos.add(move);
+
+        const oldPosMod = oldPos.mod(Vector.one());
+        const newPosMod = this.pos.mod(Vector.one());
+
+        if (oldPosMod.dist(newPosMod) > move.mag() * 2) {
+            // We wrapped around
+            this.history.push(false);
+        } else {
+            // We didn't wrap around
+            this.history.push(oldPos);
+        }
+        this.history = this.history.slice(-BoidSettings.historyLength);
 	}
 
 	calculateBehavior(flock, obstacles) {
@@ -33,7 +44,28 @@ class Boid {
 		this.cohesion(flock);
 
         this.avoidObstacles(obstacles);
+
+        if (BoidSettings.avoidWalls) {
+            this.avoidWalls();
+        }
 	}
+
+    avoidWalls() {
+        const screenPos = this.pos.mod(Vector.one());
+
+        if (screenPos.x < BoidSettings.wallMargin) {
+            this.acc.x += (BoidSettings.wallMargin - screenPos.x) * BoidSettings.wallTurnStrength;
+        } else if (screenPos.x > 1 - BoidSettings.wallMargin) {
+            this.acc.x += (1 - BoidSettings.wallMargin - screenPos.x) * BoidSettings.wallTurnStrength;
+        }
+
+        if (screenPos.y < BoidSettings.wallMargin) {
+            this.acc.y += (BoidSettings.wallMargin - screenPos.y) * BoidSettings.wallTurnStrength;
+        } else if (screenPos.y > 1 - BoidSettings.wallMargin) {
+            this.acc.y += (1 - BoidSettings.wallMargin - screenPos.y) * BoidSettings.wallTurnStrength;
+        }
+    }
+
 
     avoidObstacles(obstacles) {
         const screenPos = this.pos.mod(Vector.one());
@@ -230,10 +262,26 @@ class Boid {
         if (BoidSettings.drawHistory) {
             context.strokeStyle = this.color;
             context.beginPath();
+
+
             context.moveTo(drawPos.x, drawPos.y);
-            for (let i = 0; i < this.history.length; i++) {
-                const p = this.history[i].mod(Vector.one()).mul(context.canvas.width);
-                context.lineTo(p.x, p.y);
+            let shouldMove = false;
+            
+            for (let i = this.history.length - 1; i >= 0; i--) {
+                const historyPos = this.history[i];
+                if (historyPos == false) {
+                    context.stroke();
+                    context.beginPath();
+                    shouldMove = true;
+                } else {
+                    const p = historyPos.mod(Vector.one()).mul(context.canvas.width);
+                    if (shouldMove) {
+                        context.moveTo(p.x, p.y);
+                        shouldMove = false;
+                    } else {
+                        context.lineTo(p.x, p.y);
+                    }
+                }
             }
 
             context.stroke();
