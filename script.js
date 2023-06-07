@@ -25,7 +25,7 @@ const flock = new Flock();
     //     "#B48EAD",
     // ];
 
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 50; i++) {
         const pos = Vector.randomRect();
         const color = randomColor();
         // const color = colors[Math.floor(Math.random() * colors.length)];
@@ -84,24 +84,18 @@ function render() {
     context.fillRect(0, 0, canvas.width, canvas.height);
 
 
-    flock.update(delta);
+
+    if (!paused) {
+        flock.update(delta);
+    }
+
     flock.render(context);
-
-    // boid1.seek(boid2.pos);
-
-    // boid1.update(delta);
-    // boid2.update(delta);
-
-    // boid1.render(context);
-    // boid2.render(context);
-
-
-    // if (!paused) {
-    // }
 
     t1 = performance.now();
     delta = (t1 - t0) / 1000;
     t0 = performance.now();
+
+    // const fps = Math.floor(1 / delta);
 
 
     window.requestAnimationFrame(render);

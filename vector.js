@@ -50,6 +50,14 @@ class Vector {
 		if (this.y > other.y)	this.y -= other.y;
 		if (this.y < 0)	this.y += other.y;
 	}
+    mod(other) {
+        // Should play nice with negative numbers
+        // `const v = new Vector(1.2, -.2);`
+        // `v.mod(Vector.one());` -> `<0.2, 0.8>`
+        const x = (this.x % other.x + other.x) % other.x;
+        const y = (this.y % other.y + other.y) % other.y;
+        return new Vector(x, y);
+    }
 
 	rotate(angle) {
 		// Angle in radians

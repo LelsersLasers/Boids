@@ -7,6 +7,8 @@
 
 - fix math and weights
 	- Make it more systematic/standarized
+- ACCELERATION!
+- AVOID ROLLING CHANGES TO BOID.VEL
 - Boids can sense through wrap-around
 - Obstacle avoidance
 - Color options:
