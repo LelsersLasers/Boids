@@ -19,11 +19,11 @@ canvas.addEventListener("mousemove", function (event) {
 const context = canvas.getContext("2d");
 
 {
-    BoidSettings.maxSpeed = 0.33;
-    BoidSettings.maxForce = 1;
+    BoidSettings.maxVel = 0.33;
+    BoidSettings.maxAcc = 5;
     BoidSettings.accMultiplier = 7.5;
 
-    BoidSettings.perceptionRadius = 0.075;
+    BoidSettings.perceptionRadius = 0.1;
     BoidSettings.perceptionAngle = Math.PI * 1.5;
 
     BoidSettings.seperationMultiplier = 0.5;
@@ -44,6 +44,8 @@ const context = canvas.getContext("2d");
     BoidSettings.wallTurnStrength = 7.5;
 
     BoidSettings.numBoids = 100;
+
+    BoidSettings.species = true;
 }
 
 const flock = new Flock();

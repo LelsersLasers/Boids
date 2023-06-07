@@ -5,20 +5,20 @@ class Boid {
 		color
 	) {
 		this.pos = pos;
-		this.vel = Vector.randomUnit().mul(BoidSettings.maxSpeed);
+		this.vel = Vector.randomUnit().mul(BoidSettings.maxVel);
 		this.acc = Vector.zero();
 
 		this.color = color;
         this.history = [];
 
-        // this.id = Boid.idCount++;
+        this.species = Math.floor(Math.random() * BoidSettings.NUM_SPECIES);
 	}
 
 	update(delta) {
-        this.acc = this.acc.limit(BoidSettings.maxForce);
+        this.acc = this.acc.limit(BoidSettings.maxAcc);
 		this.vel = this.vel.add(this.acc.mul(delta * BoidSettings.accMultiplier));
 
-        this.vel = this.vel.limit(BoidSettings.maxSpeed);
+        this.vel = this.vel.limit(BoidSettings.maxVel);
 		
         const move = this.vel.mul(delta);
 
@@ -62,6 +62,10 @@ class Boid {
                     seperationSum = seperationSum.add(screenPos.sub(boidScreenPos));
                 }
             }
+
+            // only align and cohese with boids of the same species
+            if (BoidSettings.species && boid.species != this.species) continue;
+
             // alignment and cohesion
             if (dist < BoidSettings.perceptionRadius) {
                 const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
@@ -180,8 +184,17 @@ class Boid {
 		const drawPos = this.pos.mod(Vector.one()).mul(context.canvas.width);
 		const drawRadius = BoidSettings.perceptionRadius * context.canvas.width;
 
+        const speciesColors = [
+            "#BF616A",
+            "#D08770",
+            "#EBCB8B",
+            "#A3BE8C",
+            "#B48EAD",
+        ];
+        const color = BoidSettings.species ? speciesColors[this.species] : this.color;
+
 		if (drawDebug) {
-			context.strokeStyle = this.color;
+			context.strokeStyle = color;
 			context.beginPath();
 			context.moveTo(drawPos.x, drawPos.y);
 
@@ -212,16 +225,16 @@ class Boid {
             context.stroke();
 
 
-			context.strokeStyle = this.color;
+			context.strokeStyle = color;
 			context.beginPath();
 			context.moveTo(drawPos.x, drawPos.y);
-			const target = drawPos.add(this.vel.normalize().mul(drawRadius * this.vel.mag() / BoidSettings.maxSpeed));
+			const target = drawPos.add(this.vel.normalize().mul(drawRadius * this.vel.mag() / BoidSettings.maxVel));
 			context.lineTo(target.x, target.y);
 			context.stroke();
 		}
 
         if (BoidSettings.drawHistory) {
-            context.strokeStyle = this.color;
+            context.strokeStyle = color;
             context.beginPath();
 
 
@@ -258,7 +271,7 @@ class Boid {
             const p2 = tail.add(halfTail);
             const p3 = tail.sub(halfTail);
 
-            context.fillStyle = this.color;
+            context.fillStyle = color;
             context.beginPath();
             context.moveTo(p1.x, p1.y);
             context.lineTo(p2.x, p2.y);
@@ -267,7 +280,7 @@ class Boid {
             context.fill();
         } else {
             // circle
-            context.fillStyle = this.color;
+            context.fillStyle = color;
             context.beginPath();
             context.arc(drawPos.x, drawPos.y, DRAW_RATIO * context.canvas.width, 0, 2 * Math.PI);
             context.fill();

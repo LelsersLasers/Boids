@@ -1,6 +1,6 @@
 class BoidSettings {
-    static maxSpeed;
-    static maxForce;
+    static maxVel;
+    static maxAcc;
     static accMultiplier;
 
     static perceptionRadius;
@@ -24,4 +24,7 @@ class BoidSettings {
     static wallTurnStrength;
 
     static numBoids;
+
+    static species; // true: group by species (and color by species)
+    static NUM_SPECIES = 5;
 }
