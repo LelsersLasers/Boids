@@ -20,6 +20,7 @@ const context = canvas.getContext("2d");
     BoidSettings.maxVel = 0.33;
     BoidSettings.maxAcc = 5;
     BoidSettings.accMultiplier = 7.5;
+    BoidSettings.instantAcc = false;
 
     BoidSettings.perceptionRadius = 0.1;
     BoidSettings.perceptionAngle = Math.PI * 1.5;

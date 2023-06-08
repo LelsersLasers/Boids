@@ -15,15 +15,20 @@ class Boid {
 	}
 
 	update(delta) {
-        this.acc = this.acc.limit(BoidSettings.maxAcc);
-		this.vel = this.vel.add(this.acc.mul(delta * BoidSettings.accMultiplier));
+        if (!BoidSettings.instantAcc) {
+            this.acc = this.acc.limit(BoidSettings.maxAcc);
+            this.vel = this.vel.add(this.acc.mul(delta * BoidSettings.accMultiplier));
 
-        this.vel = this.vel.limit(BoidSettings.maxVel);
-		
+            this.vel = this.vel.limit(BoidSettings.maxVel);
+        } else {
+            this.vel = this.vel.add(this.acc);
+            this.vel = this.vel.limit(BoidSettings.maxVel);
+        }
+            
         const move = this.vel.mul(delta);
 
         const oldPos = this.pos;
-		this.pos = this.pos.add(move);
+        this.pos = this.pos.add(move);
 
         const oldPosMod = oldPos.mod(Vector.one());
         const newPosMod = this.pos.mod(Vector.one());
@@ -36,6 +41,11 @@ class Boid {
             this.history.push(oldPos);
         }
         this.history = this.history.slice(-BoidSettings.historyLength);
+
+        
+        if (BoidSettings.instantAcc) {
+            this.acc = Vector.zero();
+        }
 	}
 
 	calculateBehavior(flock, obstacles) {

@@ -5,6 +5,7 @@
 
 ## TODO
 
+- Zoom slider
 - CONNECT UI TO SETTINGS
 - Performance??
 	- Chunk into quads to not check all boids

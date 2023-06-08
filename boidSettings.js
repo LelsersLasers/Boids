@@ -2,6 +2,7 @@ class BoidSettings {
     static maxVel;
     static maxAcc;
     static accMultiplier;
+    static instantAcc;
 
     static perceptionRadius;
     static perceptionAngle;
