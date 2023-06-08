@@ -42,7 +42,7 @@ class Flock {
 
         for (let x = min.x; x < max.x; x += SPATIAL_GRID_SIZE) {
             for (let y = min.y; y < max.y; y += SPATIAL_GRID_SIZE) {
-                const gridPos = new Vector(x, y).mod(Vector.ONE);
+                const gridPos = new Vector(x, y).modTo(Vector.ONE);
                 const index = HASH(gridPos);
                 const spatialBoids = this.boidsSpatial[index];
 
