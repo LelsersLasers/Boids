@@ -56,8 +56,9 @@ class Boid {
         let cohesionSum = Vector.zero();
         let count = 0;
 
-        for (let i = 0; i < flock.boids.length; i++) {
-            const boid = flock.boids[i];
+        const boids = flock.getBoidsInRadius(this.pos, BoidSettings.perceptionRadius);
+        for (let i = 0; i < boids.length; i++) {
+            const boid = boids[i];
             if (boid == this) continue;
 
             const boidScreenPos = this.closestBoidScreenPos(boid);
@@ -191,7 +192,8 @@ class Boid {
     }
 
 	render(context, drawDebug = false) {
-		const drawPos = this.pos.mod(Vector.one()).mul(context.canvas.width);
+        const modPos = this.pos.mod(Vector.one());
+		const drawPos = modPos.mul(context.canvas.width);
 		const drawRadius = BoidSettings.perceptionRadius * context.canvas.width;
 
         const speciesColors = [
@@ -241,6 +243,13 @@ class Boid {
 			const target = drawPos.add(this.vel.normalize().mul(drawRadius * this.vel.mag() / BoidSettings.maxVel));
 			context.lineTo(target.x, target.y);
 			context.stroke();
+
+            const x = Math.floor(modPos.x / SPATIAL_GRID_SIZE);
+            const y = Math.floor(modPos.y / SPATIAL_GRID_SIZE);
+            const gridDrawPos = new Vector(x, y).mul(context.canvas.width * SPATIAL_GRID_SIZE);
+
+            context.strokeStyle = color;
+            context.strokeRect(gridDrawPos.x, gridDrawPos.y, context.canvas.width * SPATIAL_GRID_SIZE, context.canvas.width *  SPATIAL_GRID_SIZE);
 		}
 
         if (BoidSettings.drawHistory) {

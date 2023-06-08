@@ -1,6 +1,10 @@
 const DRAW_RATIO = 0.01;
 const DRAW_ANGLE = Math.PI / 4; // 30 degrees
 
+const SPATIAL_GRID_COUNT = 10;
+const SPATIAL_GRID_SIZE = 1 / SPATIAL_GRID_COUNT;
+const HASH = (pos) => Math.floor(pos.x / SPATIAL_GRID_SIZE) + Math.floor(pos.y / SPATIAL_GRID_SIZE) * SPATIAL_GRID_COUNT;
+
 const mouseObstacle = new Obstacle(Vector.zero(), 0.05);
 
 const canvas = document.getElementsByTagName("canvas")[0];
