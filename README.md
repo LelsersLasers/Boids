@@ -1,10 +1,7 @@
 # Boids
 
-2D boids simulation in JavaScript
+2D customizable boids simulation in JavaScript
 
 ## TODO
 
-- Performance??
-    - Vector functions don't create new vectors
-        - Instead modify `this`
-
+- SHOWCASE IMAGES + GIFS
