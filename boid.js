@@ -60,11 +60,9 @@ class Boid {
             const dist = dif.mag();
 
             // seperation
+            // Don't consider perception angle for seperation
             if (dist < BoidSettings.perceptionRadius * BoidSettings.seperationMultiplier) {
-                const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
-                if (angle < BoidSettings.perceptionAngle) {
-                    seperationSum.addTo(dif);
-                }
+                seperationSum.addTo(dif);
             }
 
             // only align and cohese with boids of the same species
@@ -205,8 +203,8 @@ class Boid {
             context.arc(
 				drawPos.x, drawPos.y,
 				drawRadius * BoidSettings.seperationMultiplier,
-				startAngle,
-				endAngle,
+				0,
+				Math.PI * 2,
 			);
             context.stroke();
 
