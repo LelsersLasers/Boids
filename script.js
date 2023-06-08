@@ -75,6 +75,72 @@ function resetBoids() {
     flock = new Flock();
 }
 
+function setupUI() {
+    const rangeElements = document.querySelectorAll("input[type=range]");
+    for (let i = 0; i < rangeElements.length; i++) {
+        const element = rangeElements[i];
+        element.addEventListener("input", function (event) {
+            let value = parseFloat(event.target.value);
+            const name = event.target.name;
+
+            switch (name) {
+                case "perceptionRadius": value /= 100; break;
+                case "perceptionAngle": value *= Math.PI / 180; break;
+            }
+
+            BoidSettings[name] = value;
+
+            if (name == "numBoids") {
+                flock.updateBoidsCount();
+            }
+        });
+    }
+
+    const checkboxElements = document.querySelectorAll("input[type=checkbox]");
+    for (let i = 0; i < checkboxElements.length; i++) {
+        const element = checkboxElements[i];
+        element.addEventListener("change", function (event) {
+            const value = event.target.checked;
+            const name = event.target.name;
+
+            BoidSettings[name] = value;
+
+            switch (name) {
+                case "avoidWalls":
+                case "drawHistory": {
+                    const extraElement = document.getElementById(name + "Extra");
+                    if (value) {
+                        extraElement.removeAttribute("hidden");
+                    } else {
+                        extraElement.setAttribute("hidden", "");
+                    }
+                    break;
+                }
+                case "instantAcc": {
+                    const extraElement = document.getElementById("instantAccExtra");
+                    if (value) {
+                        extraElement.setAttribute("hidden", "");
+                    } else {
+                        extraElement.removeAttribute("hidden");
+                    }
+                    break;
+                }
+            }
+        });
+    }
+
+    const radioElements = document.querySelectorAll("input[type=radio]");
+    for (let i = 0; i < radioElements.length; i++) {
+        const element = radioElements[i];
+        element.addEventListener("change", function (event) {
+            const value = parseInt(event.target.value);
+            if (event.target.checked) {
+                BoidSettings.debugDrawMode = value;
+            }
+        });
+    }
+}
+
 function rgbToFillStyle(r, g, b) {
     // Range: 0 to 1.0
     let scaledR = Math.floor(r * 255);
@@ -123,5 +189,7 @@ function render() {
 var t0 = performance.now();
 var t1 = performance.now();
 var delta = 1 / 60;
+
+setupUI();
 
 window.requestAnimationFrame(render);

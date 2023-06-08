@@ -31,66 +31,66 @@
 
             <hr />
             
-            <label for="seperationWeight">Seperation Weight:</label>
+            <label for="separationWeight">Separation Weight:</label>
             <output>2.0</output>
-            <input type="range" id="seperationWeight" name="seperationWeight" min="0.0" max="5.0" step="0.1" value="2.0" oninput="this.previousElementSibling .value = this.value" />
+            <input type="range" id="separationWeight" name="separationWeight" min="0.0" max="5.0" step="0.1" value="2.0" oninput="this.previousElementSibling.value = this.value" />
             <br class="spacing" />
 
             <label for="alignmentWeight">Alignment Weight:</label>
             <output>1.0</output>
-            <input type="range" id="alignmentWeight" name="alignmentWeight" min="0.0" max="5.0" step="0.1" value="1.0" oninput="this.previousElementSibling .value = this.value" />
+            <input type="range" id="alignmentWeight" name="alignmentWeight" min="0.0" max="5.0" step="0.1" value="1.0" oninput="this.previousElementSibling.value = this.value" />
             <br class="spacing" />
 
             <label for="cohesionWeight">Cohesion Weight:</label>
             <output>1.0</output>
-            <input type="range" id="cohesionWeight" name="cohesionWeight" min="0.0" max="5.0" step="0.1" value="1.0" oninput="this.previousElementSibling .value = this.value" />
+            <input type="range" id="cohesionWeight" name="cohesionWeight" min="0.0" max="5.0" step="0.1" value="1.0" oninput="this.previousElementSibling.value = this.value" />
             <br class="spacing" />
 
             <br />
 
             <label for="seperationMultiplier">Seperation Multiplier:</label>
             <output>0.5</output>
-            <input type="range" id="seperationMultiplier" name="seperationMultiplier" min="0.0" max="1.0" step="0.01" value="0.50" oninput="this.previousElementSibling .value = this.value" />
+            <input type="range" id="seperationMultiplier" name="seperationMultiplier" min="0.0" max="1.0" step="0.01" value="0.50" oninput="this.previousElementSibling.value = this.value" />
             <br class="spacing" />
 
             <br />
 
             <label for="perceptionRadius">Perception Radius:</label>
             <output>10</output>
-            <input type="range" id="perceptionRadius" name="perceptionRadius" min="0" max="100" step="1" value="10" oninput="this.previousElementSibling .value = this.value" />
+            <input type="range" id="perceptionRadius" name="perceptionRadius" min="0" max="20" step="1" value="10" oninput="this.previousElementSibling.value = this.value" />
             <br class="spacing" />
 
             <label for="perceptionAngle">Perception Angle:</label>
             <output>270</output>
-            <input type="range" id="perceptionAngle" name="perceptionAngle" min="0" max="360" step="1" value="270" oninput="this.previousElementSibling .value = this.value" />
+            <input type="range" id="perceptionAngle" name="perceptionAngle" min="0" max="360" step="1" value="270" oninput="this.previousElementSibling.value = this.value" />
             <br class="spacing" />
 
             <br />
 
             <label for="numBoids">Number of Boids:</label>
             <output>100</output>
-            <input type="range" id="numBoids" name="numBoids" min="0" max="500" step="1" value="100" oninput="this.previousElementSibling .value = this.value" />
+            <input type="range" id="numBoids" name="numBoids" min="0" max="500" step="1" value="100" oninput="this.previousElementSibling.value = this.value" />
             <br class="spacing" />
 
             <label for="species">Multiple Species:</label>
-            <input type="checkbox" id="species" />
+            <input type="checkbox" id="species" name="species"/>
             <br class="spacing" />
 
             <br />
 
             <label for="avoidWalls">Avoid Walls:</label>
-            <input type="checkbox" id="avoidWalls" />
+            <input type="checkbox" id="avoidWalls" name="avoidWalls"/>
             <br class="spacing" />
 
-            <div id="avoidWallsExtra">
+            <div id="avoidWallsExtra" hidden>
                 <label for="wallMargin">Wall Margin:</label>
                 <output>0.1</output>
-                <input type="range" id="wallMargin" name="wallMargin" min="0.0" max="0.5" step="0.01" value="0.1" oninput="this.previousElementSibling .value = this.value" />
+                <input type="range" id="wallMargin" name="wallMargin" min="0.0" max="0.5" step="0.01" value="0.1" oninput="this.previousElementSibling.value = this.value" />
                 <br class="spacing" />
 
-                <label for="wallMargin">Wall Turn Strength:</label>
+                <label for="wallTurnStrength">Wall Turn Strength:</label>
                 <output>7.5</output>
-                <input type="range" id="wallMargin" name="wallMargin" min="0" max="20" step="0.1" value="7.5" oninput="this.previousElementSibling .value = this.value" />
+                <input type="range" id="wallTurnStrength" name="wallTurnStrength" min="0" max="20" step="0.1" value="7.5" oninput="this.previousElementSibling.value = this.value" />
                 <br class="spacing" />
             </div>
 
@@ -98,48 +98,62 @@
 
             <label for="maxVel">Max Velocity</label>
             <output>0.33</output>
-            <input type="range" id="maxVel" name="maxVel" min="0.0" max="1.0" step="0.01" value="0.33" oninput="this.previousElementSibling .value = this.value" />
+            <input type="range" id="maxVel" name="maxVel" min="0.0" max="1.0" step="0.01" value="0.33" oninput="this.previousElementSibling.value = this.value" />
             <br class="spacing" />
 
             <label for="instantAcc">Instant Acceleration:</label>
-            <input type="checkbox" id="instantAcc" />
+            <input type="checkbox" id="instantAcc" name="instantAcc" />
             <br class="spacing" />
 
             <div id="instantAccExtra">
                 <label for="maxAcc">Max Acceleration</label>
                 <output>5</output>
-                <input type="range" id="maxAcc" name="maxAcc" min="0.0" max="10" step="0.1" value="5" oninput="this.previousElementSibling .value = this.value" />
+                <input type="range" id="maxAcc" name="maxAcc" min="0.0" max="10" step="0.1" value="5" oninput="this.previousElementSibling.value = this.value" />
                 <br class="spacing" />
 
-                <label for="maxAcc">Acceleration Multiplier</label>
+                <label for="accMultiplier">Acceleration Multiplier</label>
                 <output>7.5</output>
-                <input type="range" id="maxAcc" name="maxAcc" min="0.0" max="20.0" step="0.1" value="7.5" oninput="this.previousElementSibling .value = this.value" />
+                <input type="range" id="accMultiplier" name="accMultiplier" min="0.0" max="20.0" step="0.1" value="7.5" oninput="this.previousElementSibling.value = this.value" />
                 <br class="spacing" />
             </div>
 
             <br />
            
             <label for="drawHistory">Draw Trails:</label>
-            <input type="checkbox" id="drawHistory" />
+            <input type="checkbox" id="drawHistory" name="drawHistory" checked />
             <br class="spacing" />
 
             <div id="drawHistoryExtra">
                 <label for="historyLength">Trail Length:</label>
                 <output>50</output>
-                <input type="range" id="historyLength" name="historyLength" min="0" max="100" step="1" value="50" oninput="this.previousElementSibling .value = this.value" />
+                <input type="range" id="historyLength" name="historyLength" min="0" max="100" step="1" value="50" oninput="this.previousElementSibling.value = this.value" />
                 <br class="spacing" />
             </div>
 
-            <label for="drawTriangles">Draw Trails:</label>
-            <input type="checkbox" id="drawTriangles" />
+            <label for="drawMode">Draw Triangles:</label>
+            <input type="checkbox" id="drawMode" name="drawMode" />
             <br class="spacing" />
 
             <br />
 
             <label for="obstacleStrength">Obstacle Strength:</label>
             <output>0</output>
-            <input type="range" id="obstacleStrength" name="obstacleStrength" min="0.0" max="5.0" step="0.1" value="0" oninput="this.previousElementSibling .value = this.value" />
+            <input type="range" id="obstacleStrength" name="obstacleStrength" min="0.0" max="5.0" step="0.1" value="0" oninput="this.previousElementSibling.value = this.value" />
             <br class="spacing" />
+
+            <br />
+
+            <label for="debugDrawMode">Extra Render info:</label>
+            <br />
+            <input type="radio" id="debugDrawModeNone" name="debugDrawMode" value="0" />
+            <label for="debugDrawModeNone">None</label>
+            <br />
+            <input type="radio" id="debugDrawModeOne" name="debugDrawMode" value="1" checked />
+            <label for="debugDrawModeOne">One</label>
+            <br />
+            <input type="radio" id="debugDrawModeAll" name="debugDrawMode" value="2" />
+            <label for="debugDrawModeAll">All</label>
+            <br class="spacing"/>
 
             <hr />
 

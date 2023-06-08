@@ -28,4 +28,6 @@ class BoidSettings {
 
     static species; // true: group by species (and color by species)
     static NUM_SPECIES = 5;
+
+    static debugDrawMode = 1; // 0: none, 1: just 1 boid, 2: all boids
 }

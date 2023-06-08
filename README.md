@@ -1,17 +1,13 @@
 # Boids
 
-2D boids simulation in JavaScript 
-
+2D boids simulation in JavaScript
 
 ## TODO
 
-- Zoom slider
-- CONNECT UI TO SETTINGS
 - Performance??
 	- Chunk into quads to not check all boids
     - Vector functions don't create new vectors
         - Instead modify `this`
-- Debug draw modes?
 
 ## UI
 
@@ -45,6 +41,11 @@
         - Checkbox: draw triangles (true)
     - 
         - Slider: obstacle strength (0-5) (0)
+    - 
+        - Debug draw info:
+            - None
+            - One
+            - All
 - HR
 - Bottom
     - Button: pause

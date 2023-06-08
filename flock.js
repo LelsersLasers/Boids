@@ -3,10 +3,7 @@ class Flock {
 		this.boids = [];
 
         for (let i = 0; i < BoidSettings.numBoids; i++) {
-            const pos = Vector.randomRect();
-            const color = randomColor();
-            const boid = new Boid(pos, color);
-            this.addBoid(boid);
+            this.addBoid();
         }
 	}
 
@@ -25,11 +22,29 @@ class Flock {
 	render(context) {
 		for (let i = 0; i < this.boids.length; i++) {
 			const boid = this.boids[i];
-			boid.render(context, i == 0);
+
+            switch (BoidSettings.debugDrawMode) {
+                case 0: boid.render(context, false); break;
+                case 1: boid.render(context, i == 0); break;
+                case 2: boid.render(context, true); break;
+            }
 		}
 	}
 
-	addBoid(b) {
-		this.boids.push(b);
+	addBoid() {
+        const pos = Vector.randomRect();
+        const color = randomColor();
+        const boid = new Boid(pos, color);
+		this.boids.push(boid);
 	}
+
+    updateBoidsCount() {
+        if (this.boids.length < BoidSettings.numBoids) {
+            for (let i = this.boids.length; i < BoidSettings.numBoids; i++) {
+                this.addBoid();
+            }
+        } else {
+            this.boids.length = BoidSettings.numBoids;
+        }
+    }
 }
