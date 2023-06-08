@@ -2,6 +2,9 @@
 
 2D customizable boids simulation in JavaScript
 
+![Cover](./Showcase/Cover.PNG)
+
 ## TODO
 
-- SHOWCASE IMAGES + GIFS
+- Itch.io page
+  - SHOWCASE IMAGES + GIFS
