@@ -234,8 +234,8 @@ class Boid {
 
             const x = Math.floor(modPos.x / SPATIAL_GRID_SIZE);
             const y = Math.floor(modPos.y / SPATIAL_GRID_SIZE);
-            const gridDrawPos = new Vector(x, y).mulTo(context.canvas.width * SPATIAL_GRID_SIZE);
             const w = context.canvas.width * SPATIAL_GRID_SIZE;
+            const gridDrawPos = new Vector(x, y).mulTo(w);
 
             context.strokeStyle = color;
             context.strokeRect(gridDrawPos.x, gridDrawPos.y, w, w);
