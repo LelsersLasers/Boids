@@ -5,6 +5,27 @@ const SPATIAL_GRID_COUNT = 10;
 const SPATIAL_GRID_SIZE = 1 / SPATIAL_GRID_COUNT;
 const HASH = (pos) => Math.floor(pos.x / SPATIAL_GRID_SIZE) + Math.floor(pos.y / SPATIAL_GRID_SIZE) * SPATIAL_GRID_COUNT;
 
+const VARIATIONS = [];
+{ 
+    const changes = [-1, 0, 1];
+    for (let i = 0; i < changes.length; i++) {
+        const x = changes[i];
+        for (let j = 0; j < changes.length; j++) {
+            const y = changes[j];
+            if (x == 0 && y == 0) continue;
+            VARIATIONS.push(new Vector(x, y));
+        }
+    }
+}
+
+const SPECIES_COLORS = [
+    "#BF616A",
+    "#D08770",
+    "#EBCB8B",
+    "#A3BE8C",
+    "#B48EAD",
+];
+
 const mouseObstacle = new Obstacle(Vector.zero(), 0.05);
 
 const canvas = document.getElementsByTagName("canvas")[0];
@@ -167,7 +188,6 @@ function render() {
     context.fillRect(0, 0, canvas.width, canvas.height);
 
 
-
     if (!paused) {
         flock.update(delta, [mouseObstacle]);
     }
@@ -178,13 +198,13 @@ function render() {
         mouseObstacle.render(context);
     }
 
+
     t1 = performance.now();
     delta = (t1 - t0) / 1000;
     t0 = performance.now();
 
+
     document.getElementById("fpsText").innerHTML = "FPS: " + Math.round(1 / delta);
-
-
 
     window.requestAnimationFrame(render);
 }

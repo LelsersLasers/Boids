@@ -26,23 +26,23 @@ class Flock {
     }
 
     addBoidToSpatial(boid) {
-        const index = HASH(boid.pos.mod(Vector.one()));
+        const index = HASH(boid.pos.mod(Vector.ONE));
         this.boidsSpatial[index].push(boid);
     }
 
     getBoidsInRadius(pos, radius) {
         const boids = [];
-        pos = pos.mod(Vector.one());
+        pos = pos.mod(Vector.ONE);
 
-        const radiusVec = Vector.one().mul(radius);
-        const spatialVec = Vector.one().mul(SPATIAL_GRID_SIZE);
+        const radiusVec = Vector.fromRect(radius);
+        const spatialVec = Vector.fromRect(SPATIAL_GRID_SIZE);
 
         const min = pos.sub(radiusVec);
         const max = pos.add(radiusVec).add(spatialVec);
 
         for (let x = min.x; x < max.x; x += SPATIAL_GRID_SIZE) {
             for (let y = min.y; y < max.y; y += SPATIAL_GRID_SIZE) {
-                const gridPos = new Vector(x, y).mod(Vector.one());
+                const gridPos = new Vector(x, y).modTo(Vector.ONE);
                 const index = HASH(gridPos);
                 const spatialBoids = this.boidsSpatial[index];
 
@@ -69,21 +69,32 @@ class Flock {
 	}
 
 	render(context) {
-		for (let i = 0; i < this.boids.length; i++) {
-			const boid = this.boids[i];
-
-            switch (BoidSettings.debugDrawMode) {
-                case 0: boid.render(context, false); break;
-                case 1: boid.render(context, i == 0); break;
-                case 2: boid.render(context, true); break;
+        switch (BoidSettings.debugDrawMode) {
+            case 0: {
+                for (let i = 0; i < this.boids.length; i++) {
+                    const boid = this.boids[i];
+                    boid.render(context, false);
+                }
+                break;
             }
-		}
+            case 1: {
+                for (let i = 0; i < this.boids.length; i++) {
+                    const boid = this.boids[i];
+                    boid.render(context, i == 0);
+                }
+                break;
+            }
+            case 2: {
+                for (let i = 0; i < this.boids.length; i++) {
+                    const boid = this.boids[i];
+                    boid.render(context, true);
+                }
+            }
+        }
 	}
 
 	addBoid() {
-        const pos = Vector.randomRect();
-        const color = randomColor();
-        const boid = new Boid(pos, color);
+        const boid = new Boid();
 		this.boids.push(boid);
 	}
 
