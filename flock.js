@@ -26,7 +26,7 @@ class Flock {
     }
 
     addBoidToSpatial(boid) {
-        const index = HASH(boid.pos.mod(Vector.one()));
+        const index = HASH(boid.pos.mod(Vector.ONE));
         this.boidsSpatial[index].push(boid);
     }
 
