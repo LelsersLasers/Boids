@@ -166,16 +166,16 @@ class Boid {
             }
         }
 
-        if (closestDist < BoidSettings.perceptionRadius) {
-            context.strokeStyle = "red";
-            context.beginPath();
-            const drawPos = this.pos.mod(Vector.one()).mul(context.canvas.width);
-            context.moveTo(drawPos.x, drawPos.y);
+        // if (closestDist < BoidSettings.perceptionRadius) {
+        //     context.strokeStyle = "red";
+        //     context.beginPath();
+        //     const drawPos = this.pos.mod(Vector.one()).mul(context.canvas.width);
+        //     context.moveTo(drawPos.x, drawPos.y);
 
-            const draw2Pos = closest.mod(Vector.one()).mul(context.canvas.width);
-            context.lineTo(draw2Pos.x, draw2Pos.y);
-            context.stroke();
-        }
+        //     const draw2Pos = closest.mod(Vector.one()).mul(context.canvas.width);
+        //     context.lineTo(draw2Pos.x, draw2Pos.y);
+        //     context.stroke();
+        // }
 
         return closest;
     }
