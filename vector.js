@@ -5,6 +5,60 @@ class Vector {
 		this.y = y;
 	}
 
+    addTo(other) {
+        this.x += other.x;
+        this.y += other.y;
+        return this;
+    }
+    subTo(other) {
+        this.x -= other.x;
+        this.y -= other.y;
+        return this;
+    }
+    mulTo(scalar) {
+        this.x *= scalar;
+        this.y *= scalar;
+        return this;
+    }
+    divTo(scalar) {
+        this.x /= scalar;
+        this.y /= scalar;
+        return this;
+    }
+    normalizeTo() {
+        const mag = this.mag();
+        if (mag == 0) {
+            return this;
+        }
+        return this.divTo(mag);
+    }
+    limitTo(max) {
+        const mag = this.mag();
+        if (mag > max) {
+            return this.normalizeTo().mulTo(max);
+        }
+        return this;
+    }
+    modTo(other) {
+        // Should play nice with negative numbers
+        this.x = (this.x % other.x + other.x) % other.x;
+        this.y = (this.y % other.y + other.y) % other.y;
+        return this;
+    }
+    rotateTo(angle) {
+        const cos = Math.cos(angle);
+        const sin = Math.sin(angle);
+
+        const x = this.x * cos - this.y * sin;
+        const y = this.x * sin + this.y * cos;
+
+        this.x = x;
+        this.y = y;
+        
+        return this;
+    }
+
+
 	add(other) {
 		return new Vector(this.x + other.x, this.y + other.y);
 	}
@@ -42,18 +96,8 @@ class Vector {
 		}
 		return this.clone();
 	}
-	wrap(other) {
-		// MODIFIES THIS!!!
-		if (this.x > other.x)	this.x -= other.x;
-		if (this.x < 0)			this.x += other.x;
-
-		if (this.y > other.y)	this.y -= other.y;
-		if (this.y < 0)	this.y += other.y;
-	}
     mod(other) {
         // Should play nice with negative numbers
-        // `const v = new Vector(1.2, -.2);`
-        // `v.mod(Vector.one());` -> `<0.2, 0.8>`
         const x = (this.x % other.x + other.x) % other.x;
         const y = (this.y % other.y + other.y) % other.y;
         return new Vector(x, y);
@@ -65,9 +109,6 @@ class Vector {
 		const sin = Math.sin(angle);
 		return new Vector(this.x * cos - this.y * sin, this.x * sin + this.y * cos);
 	}
-	rotateAround(angle, other) {
-		return this.sub(other).rotate(angle).add(other);
-	}
 	angleBetween(other) {
 		return Math.acos(this.dot(other) / (this.mag() * other.mag()));
 	}
@@ -78,18 +119,8 @@ class Vector {
 	toString() {
 		return "<" + this.x + ", " + this.y + ">";
 	}
-	toArray() {
-		return [this.x, this.y];
-	}
 	clone() {
 		return new Vector(this.x, this.y);
-	}
-
-	static fromArray(array) {
-		return new Vector(array[0], array[1]);
-	}
-	static fromAngle(angle) {
-		return new Vector(Math.cos(angle), Math.sin(angle));
 	}
 
 	static randomUnit() {
@@ -124,4 +155,18 @@ class Vector {
 	static unitYNeg() {
 		return new Vector(0, -1);
 	}
+
+    static fromRect(rect) {
+        return new Vector(rect, rect);
+    }
+
+    // DON'T MODIFY THESE!!
+    static ONE = Vector.one();
+    static ZERO = Vector.zero();
+    static UNIT_X = Vector.unitX();
+    static UNIT_Y = Vector.unitY();
+    static UNIT_XY = Vector.unitXY();
+    static UNIT_XY_NEG = Vector.unitXYNeg();
+    static UNIT_X_NEG = Vector.unitXNeg();
+    static UNIT_Y_NEG = Vector.unitYNeg();
 }

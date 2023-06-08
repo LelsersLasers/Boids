@@ -1,14 +1,11 @@
 class Boid {
-    // static idCount = 0;
-	constructor(
-		pos,
-		color
-	) {
-		this.pos = pos;
+	constructor() {
+		this.pos = Vector.randomRect();
+        
 		this.vel = Vector.randomUnit().mul(BoidSettings.maxVel);
 		this.acc = Vector.zero();
 
-		this.color = color;
+		this.color = randomColor();
         this.history = [];
 
         this.species = Math.floor(Math.random() * BoidSettings.NUM_SPECIES);
@@ -16,22 +13,22 @@ class Boid {
 
 	update(delta) {
         if (!BoidSettings.instantAcc) {
-            this.acc = this.acc.limit(BoidSettings.maxAcc);
-            this.vel = this.vel.add(this.acc.mul(delta * BoidSettings.accMultiplier));
+            this.acc.limitTo(BoidSettings.maxAcc);
+            this.vel.addTo(this.acc.mul(delta * BoidSettings.accMultiplier));
 
-            this.vel = this.vel.limit(BoidSettings.maxVel);
+            this.vel.limitTo(BoidSettings.maxVel);
         } else {
-            this.vel = this.vel.add(this.acc);
-            this.vel = this.vel.limit(BoidSettings.maxVel);
+            this.vel.addTo(this.acc);
+            this.vel.limitTo(BoidSettings.maxVel);
         }
             
         const move = this.vel.mul(delta);
 
-        const oldPos = this.pos;
-        this.pos = this.pos.add(move);
+        const oldPos = this.pos.clone();
+        this.pos.addTo(move);
 
-        const oldPosMod = oldPos.mod(Vector.one());
-        const newPosMod = this.pos.mod(Vector.one());
+        const oldPosMod = oldPos.mod(Vector.ONE);
+        const newPosMod = this.pos.mod(Vector.ONE);
 
         if (oldPosMod.dist(newPosMod) > move.mag() * 2) {
             // We wrapped around
@@ -49,7 +46,7 @@ class Boid {
 	}
 
 	calculateBehavior(flock, obstacles) {
-        const screenPos = this.pos.mod(Vector.one());
+        const screenPos = this.pos.mod(Vector.ONE);
 
         let seperationSum = Vector.zero();
         let alignmentSum = Vector.zero();
@@ -70,7 +67,7 @@ class Boid {
             if (dist < BoidSettings.perceptionRadius * BoidSettings.seperationMultiplier) {
                 const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
                 if (angle < BoidSettings.perceptionAngle) {
-                    seperationSum = seperationSum.add(screenPos.sub(boidScreenPos));
+                    seperationSum.addTo(screenPos.sub(boidScreenPos));
                 }
             }
 
@@ -81,21 +78,23 @@ class Boid {
             if (dist < BoidSettings.perceptionRadius) {
                 const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
                 if (angle < BoidSettings.perceptionAngle) {
-                    alignmentSum = alignmentSum.add(boid.vel);
-                    cohesionSum = cohesionSum.add(boidScreenPos);
+                    alignmentSum.addTo(boid.vel);
+                    cohesionSum.addTo(boidScreenPos);
 
                     count++;
                 }
             }
         }
 
-        this.acc = this.acc.add(seperationSum.mul(BoidSettings.separationWeight));
-        if (count > 0) {
-            alignmentSum = alignmentSum.div(count);
-            this.acc = this.acc.add(alignmentSum.mul(BoidSettings.alignmentWeight));
+        seperationSum.mulTo(BoidSettings.separationWeight);
+        this.acc.addTo(seperationSum);
 
-            cohesionSum = cohesionSum.div(count);
-            this.acc = this.acc.add(cohesionSum.sub(screenPos).mul(BoidSettings.cohesionWeight));
+        if (count > 0) {
+            alignmentSum.mulTo(BoidSettings.alignmentWeight / count);
+            this.acc.addTo(alignmentSum);
+
+            cohesionSum.mulTo(BoidSettings.cohesionWeight / count);
+            this.acc.addTo(cohesionSum);
         }
 
         this.avoidObstacles(obstacles);
@@ -106,7 +105,7 @@ class Boid {
 	}
 
     avoidWalls() {
-        const screenPos = this.pos.mod(Vector.one());
+        const screenPos = this.pos.mod(Vector.ONE);
 
         if (screenPos.x < BoidSettings.wallMargin) {
             this.acc.x += (BoidSettings.wallMargin - screenPos.x) * BoidSettings.wallTurnStrength;
@@ -123,7 +122,7 @@ class Boid {
 
 
     avoidObstacles(obstacles) {
-        const screenPos = this.pos.mod(Vector.one());
+        const screenPos = this.pos.mod(Vector.ONE);
         let sum = Vector.zero();
         let count = 0;
 
@@ -137,37 +136,27 @@ class Boid {
             if (dist < obstacle.radius + BoidSettings.perceptionRadius) {
                 const angle = Math.abs(this.vel.angleBetween(dif)) * 2;
                 if (angle < BoidSettings.perceptionAngle) {
-                    sum = sum.add(screenPos.sub(obstacleScreenPos));
+                    sum.addTo(screenPos.sub(obstacleScreenPos));
                     count++;
                 }
             }
         }
 
-        this.acc = this.acc.add(sum.mul(BoidSettings.obstacleStrength));
+        sum.mulTo(BoidSettings.obstacleStrength)
+        this.acc.addTo(sum);
     }
 
     closestBoidScreenPos(other) {
         // other must have `pos`
 
-        const screenPos = this.pos.mod(Vector.one());
-        const otherScreenPos = other.pos.mod(Vector.one());
-
-        const variations = [];
-        const changes = [-1, 0, 1];
-        for (let i = 0; i < changes.length; i++) {
-            const x = changes[i];
-            for (let j = 0; j < changes.length; j++) {
-                const y = changes[j];
-                if (x == 0 && y == 0) continue;
-                variations.push(new Vector(x, y));
-            }
-        }
+        const screenPos = this.pos.mod(Vector.ONE);
+        const otherScreenPos = other.pos.mod(Vector.ONE);
 
         let closest = otherScreenPos;
         let closestDist = screenPos.dist(closest);
 
-        for (let i = 0; i < variations.length; i++) {
-            const variation = variations[i];
+        for (let i = 0; i < VARIATIONS.length; i++) {
+            const variation = VARIATIONS[i];
             const variationPos = otherScreenPos.add(variation);
 
             const dist = screenPos.dist(variationPos);
@@ -177,41 +166,38 @@ class Boid {
             }
         }
 
-        // if (closestDist < BoidSettings.perceptionRadius && this.id == 0) {
-        //     context.strokeStyle = "red";
-        //     context.beginPath();
-        //     const drawPos = this.pos.mod(Vector.one()).mul(context.canvas.width);
-        //     context.moveTo(drawPos.x, drawPos.y);
+        if (closestDist < BoidSettings.perceptionRadius) {
+            context.strokeStyle = "red";
+            context.beginPath();
+            const drawPos = this.pos.mod(Vector.one()).mul(context.canvas.width);
+            context.moveTo(drawPos.x, drawPos.y);
 
-        //     const draw2Pos = closest.mod(Vector.one()).mul(context.canvas.width);
-        //     context.lineTo(draw2Pos.x, draw2Pos.y);
-        //     context.stroke();
-        // }
+            const draw2Pos = closest.mod(Vector.one()).mul(context.canvas.width);
+            context.lineTo(draw2Pos.x, draw2Pos.y);
+            context.stroke();
+        }
 
         return closest;
     }
 
 	render(context, drawDebug = false) {
-        const modPos = this.pos.mod(Vector.one());
+        const modPos = this.pos.mod(Vector.ONE);
 		const drawPos = modPos.mul(context.canvas.width);
 		const drawRadius = BoidSettings.perceptionRadius * context.canvas.width;
 
-        const speciesColors = [
-            "#BF616A",
-            "#D08770",
-            "#EBCB8B",
-            "#A3BE8C",
-            "#B48EAD",
-        ];
-        const color = BoidSettings.species ? speciesColors[this.species] : this.color;
+        
+        const color = BoidSettings.species ? SPECIES_COLORS[this.species] : this.color;
 
 		if (drawDebug) {
 			context.strokeStyle = color;
 			context.beginPath();
 			context.moveTo(drawPos.x, drawPos.y);
 
-			const startAngle = this.vel.angle() - BoidSettings.perceptionAngle / 2;
-			const endAngle = this.vel.angle() + BoidSettings.perceptionAngle / 2;
+            const angle = this.vel.angle();
+            const halfPerceptionAngle = BoidSettings.perceptionAngle / 2;
+
+			const startAngle = angle - halfPerceptionAngle;
+			const endAngle = angle + halfPerceptionAngle;
 
 			context.lineTo(
 				drawPos.x + Math.cos(startAngle) * drawRadius,
@@ -240,16 +226,19 @@ class Boid {
 			context.strokeStyle = color;
 			context.beginPath();
 			context.moveTo(drawPos.x, drawPos.y);
-			const target = drawPos.add(this.vel.normalize().mul(drawRadius * this.vel.mag() / BoidSettings.maxVel));
-			context.lineTo(target.x, target.y);
+			
+            const target = drawPos.add(this.vel.normalize().mulTo(drawRadius * this.vel.mag() / BoidSettings.maxVel));
+			
+            context.lineTo(target.x, target.y);
 			context.stroke();
 
             const x = Math.floor(modPos.x / SPATIAL_GRID_SIZE);
             const y = Math.floor(modPos.y / SPATIAL_GRID_SIZE);
-            const gridDrawPos = new Vector(x, y).mul(context.canvas.width * SPATIAL_GRID_SIZE);
+            const gridDrawPos = new Vector(x, y).mulTo(context.canvas.width * SPATIAL_GRID_SIZE);
+            const w = context.canvas.width * SPATIAL_GRID_SIZE;
 
             context.strokeStyle = color;
-            context.strokeRect(gridDrawPos.x, gridDrawPos.y, context.canvas.width * SPATIAL_GRID_SIZE, context.canvas.width *  SPATIAL_GRID_SIZE);
+            context.strokeRect(gridDrawPos.x, gridDrawPos.y, w, w);
 		}
 
         if (BoidSettings.drawHistory) {
@@ -267,7 +256,7 @@ class Boid {
                     context.beginPath();
                     shouldMove = true;
                 } else {
-                    const p = historyPos.mod(Vector.one()).mul(context.canvas.width);
+                    const p = historyPos.mod(Vector.ONE).mulTo(context.canvas.width);
                     if (shouldMove) {
                         context.moveTo(p.x, p.y);
                         shouldMove = false;
@@ -282,11 +271,13 @@ class Boid {
 
         if (BoidSettings.drawMode) {
             // isosceles triangle
-            const tail = drawPos.sub(this.vel.normalize().mul(DRAW_RATIO * context.canvas.width));
-            const halfTailLen = 2 / Math.tan(Math.PI / 2 - DRAW_ANGLE / 2) * DRAW_RATIO * context.canvas.width;
-            const halfTail = this.vel.normalize().mul(halfTailLen).rotate(Math.PI / 2);
+            const l = DRAW_RATIO * context.canvas.width;
 
-            const p1 = drawPos.add(this.vel.normalize().mul(DRAW_RATIO * context.canvas.width));
+            const tail = drawPos.sub(this.vel.normalize().mulTo(l));
+            const halfTailLen = 2 / Math.tan(Math.PI / 2 - DRAW_ANGLE / 2) * l;
+            const halfTail = this.vel.normalize().mulTo(halfTailLen).rotateTo(Math.PI / 2);
+
+            const p1 = drawPos.add(this.vel.normalize().mulTo(l));
             const p2 = tail.add(halfTail);
             const p3 = tail.sub(halfTail);
 
