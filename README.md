@@ -30,7 +30,7 @@
     - 
         - Checkbox: avoid walls (false)
             - Slider: wall margin (0-0.5) (0.1)
-            - Slider: wall turn strength (0-20) (7.5)
+            - Slider: wall turn strength (0-50) (7.5)
     - 
         - Slider: max vel (0-1) (0.33)
         - Slider: max acc (0-10) (5)
